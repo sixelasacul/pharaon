@@ -1,7 +1,9 @@
-export interface Color {
-  base: string;
-  hover: string;
-  border: string;
+import { Color } from "../PickedColorContext";
+
+export const noColor: Color = {
+  base: '',
+  hover: 'hover:bg-black/10',
+  border: ''
 }
 
 export const palette: Color[] = [
