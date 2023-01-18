@@ -1,7 +1,7 @@
 import { Lyrics } from "../Lyrics";
 import { SongMetadata } from "../Metadata";
 import { Palette } from "../Palette";
-import { PickedColorProvider } from "../PickedColorContext";
+import { PickedColorProvider } from "../../state/PickedColorContext";
 import { QuickActionsContainer } from "../QuickActions";
 
 export function App() {

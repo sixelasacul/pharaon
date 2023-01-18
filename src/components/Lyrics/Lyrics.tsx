@@ -3,10 +3,11 @@ import * as React from 'react'
 import { PencilIcon, XMarkIcon, PrinterIcon } from '@heroicons/react/24/solid';
 import { identifyArrayItems } from '../../utils/identifyArrayItems';
 import { extractSyllablesFromSentence } from '../../utils/parser';
-import { Color, usePickedColor } from '../PickedColorContext';
+import { Color, usePickedColor } from '../../state/PickedColorContext';
 import { noColor } from '../Palette';
 import { QuickAction } from '../QuickActions';
 import { IconButton } from '../IconButton';
+import { ShareButton } from '../ShareButton';
 
 const defaultText = `J'suis dans les catacombes, je vise ton canasson
 J'sors des rimes à la s'conde, l'Empereur, le pharaon
@@ -53,6 +54,7 @@ export function Lyrics() {
           <PrinterIcon />
           {/* Tooltip to suggest to print backgrounds + remove header and footer */}
         </IconButton>
+        <ShareButton />
       </QuickAction>
       <div className='max-w-lg w-full h-full border-red-200'>
         {isEditMode ? (

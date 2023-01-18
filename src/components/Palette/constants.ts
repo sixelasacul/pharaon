@@ -1,4 +1,4 @@
-import { Color } from "../PickedColorContext";
+import { Color } from "../../state/PickedColorContext";
 
 export const noColor: Color = {
   base: '',

@@ -1,5 +1,5 @@
 import { clsx } from 'clsx';
-import { usePickedColor } from '../PickedColorContext';
+import { usePickedColor } from '../../state/PickedColorContext';
 import { palette } from './constants';
 
 export function Palette() {
