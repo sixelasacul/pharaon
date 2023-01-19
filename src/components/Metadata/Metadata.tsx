@@ -51,18 +51,18 @@ export function DynamicTextInput({
 }
 
 export function SongMetadata() {
-  const updateSharedData = useShareableStoreAction()
+  const { updateState } = useShareableStoreAction()
   return (
     <div className='grid grid-cols-1 gap-2 max-w-lg'>
       <DynamicTextInput
         name='Song name'
-        onEditDone={(name) => updateSharedData({ name })}
+        onEditDone={(name) => updateState({ name })}
       />
       <DynamicTextInput
         name='Song artist(s)'
         className='text-right'
         format={artists => `- ${artists}`}
-        onEditDone={(artists) => updateSharedData({ artists })}
+        onEditDone={(artists) => updateState({ artists })}
       />
     </div>
   )
