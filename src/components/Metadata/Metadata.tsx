@@ -1,22 +1,29 @@
 import * as React from 'react'
 import clsx from 'clsx';
-import { useShareableStoreAction } from '../../state/shareableStore';
+import { useShareableStore, useShareableStoreAction } from '../../state/shareableStore';
 
 interface DynamicTextInputProps {
   name: string
+  externalValue: string
   className?: string
   format?(value: string): string
   onEditDone?(value: string): void
 }
 export function DynamicTextInput({
   name,
+  externalValue,
   className,
   format = value => value,
   onEditDone
 }: DynamicTextInputProps) {
+  // Could be a hook, as it is a very similar logic as in Lyrics
   const [value, setValue] = React.useState('')
   const [isEditing, setIsEditing] = React.useState(false)
 
+  function startEditing() {
+    setValue(externalValue)
+    setIsEditing(true)
+  }
   function doneEditing() {
     setIsEditing(false)
     onEditDone?.(value)
@@ -34,6 +41,8 @@ export function DynamicTextInput({
         onKeyDown={(e) => {
           if(e.key === 'Enter') {
             doneEditing()
+          } else if(e.key === 'Escape') {
+            setIsEditing(false)
           }
         }} />
     )
@@ -42,25 +51,30 @@ export function DynamicTextInput({
     <p
       role='button'
       tabIndex={0}
-      className={clsx({ 'italic': !value }, className)}
-      onFocus={() => setIsEditing(true)}
+      className={clsx({ 'italic': !externalValue }, className)}
+      onFocus={startEditing}
     >
-      {value ? format(value) : name}
+      {externalValue ? format(externalValue) : name}
     </p>
   )
 }
 
 export function SongMetadata() {
   const { updateState } = useShareableStoreAction()
+  const name = useShareableStore((state) => state.name)
+  const artists = useShareableStore((state) => state.artists)
+  
   return (
     <div className='grid grid-cols-1 gap-2 max-w-lg'>
       <DynamicTextInput
         name='Song name'
+        externalValue={name}
         onEditDone={(name) => updateState({ name })}
-      />
+        />
       <DynamicTextInput
         name='Song artist(s)'
         className='text-right'
+        externalValue={artists}
         format={artists => `- ${artists}`}
         onEditDone={(artists) => updateState({ artists })}
       />

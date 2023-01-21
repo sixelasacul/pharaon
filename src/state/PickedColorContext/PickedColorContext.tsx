@@ -4,6 +4,7 @@ export interface Color {
   base: string;
   hover: string;
   border: string;
+  name: string;
 }
 
 type PickedColorContextType = ReturnType<typeof React.useState<Color>>
