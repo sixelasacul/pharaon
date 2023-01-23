@@ -15,6 +15,13 @@ interface Store extends SharedState {
   updateSyllablesColor(index: number, color: Color | null): void
 }
 
+export const defaultStore: SharedState = {
+  name: '',
+  artists: '',
+  lyrics: '',
+  syllablesColor: []
+}
+
 // The advantage of the zustand store compared to the React context is that we
 // can use selector to prevent extra renders where we don't read the state
 // (we only use the actions in most components, except when sharing the link)
