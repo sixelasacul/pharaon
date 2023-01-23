@@ -10,17 +10,12 @@ import { QuickAction } from '../QuickActions';
 import { IconButton } from '../IconButton';
 import { ShareButton } from '../ShareButton';
 
-const defaultText = `J'suis dans les catacombes, je vise ton canasson
-J'sors des rimes à la s'conde, l'Empereur, le pharaon
-Le soir, je drague ta blonde, j'vais gagner l'marathon
-Chargeur plein d'balles à plomb, pas l'temps pour la baston
-`;
-
 interface SyllableProps {
   index: number
 }
 function Syllable({ index, children }: React.PropsWithChildren<SyllableProps>) {
-  const [pickedColor] = usePickedColor()
+  // Prefer null rather than undefined
+  const [pickedColor = null] = usePickedColor()
   const { updateSyllablesColor } = useShareableStoreAction()
   const color = useShareableStore((state) => state.syllablesColor[index])
   const { base, hover } = color ?? noColor
@@ -29,7 +24,7 @@ function Syllable({ index, children }: React.PropsWithChildren<SyllableProps>) {
     <span
       role="button"
       className={clsx('select-all', base, hover)}
-      onClick={() => updateSyllablesColor(index, pickedColor ?? noColor)}
+      onClick={() => updateSyllablesColor(index, pickedColor)}
     >
       {children}
     </span>

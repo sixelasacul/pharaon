@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { shortenNameColor } from '../../components/Palette'
+import { noColor, shortenNameColor } from '../../components/Palette'
 import { compressAndEncode } from '../../utils/compressor'
 import { Color } from '../PickedColorContext'
 
@@ -12,7 +12,7 @@ export interface SharedState {
 interface Store extends SharedState {
   shareable: string
   updateState(next: Partial<SharedState>): void
-  updateSyllablesColor(index: number, color: Color): void
+  updateSyllablesColor(index: number, color: Color | null): void
 }
 
 // The advantage of the zustand store compared to the React context is that we
