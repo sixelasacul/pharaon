@@ -1,6 +1,6 @@
 import * as React from "react";
 import { PickedColorProvider } from "../../state/PickedColorContext";
-import { useShareableStore, useShareableStoreAction, SharedState } from "../../state/shareableStore";
+import { useShareableStore, useShareableStoreAction, SharedState, defaultStore } from "../../state/shareableStore";
 import { decodeAndDecompress } from "../../utils/compressor";
 import { Lyrics } from "../Lyrics";
 import { SongMetadata } from "../Metadata";
@@ -12,33 +12,54 @@ interface ExportedSharedState extends Omit<SharedState, 'syllablesColor'> {
   syllablesColor: string[]
 }
 
-function UpdateUrl() {
-  const shareable = useShareableStore((state) => state.shareable)
+function useUrlUpdateFromStore() {
+  const { shareable, ...rest } = useShareableStore(({ updateState, updateSyllablesColor, ...rest }) => rest)
 
   React.useEffect(() => {
-    if (shareable) {
-      window.history.replaceState(null, '', `${window.location.origin}#${shareable}`)
+    const hash = window.location.hash.substring(1)
+    if (shareable !== hash) {
+      window.history.pushState(rest, '', `${window.location.origin}#${shareable}`)
     }
   }, [shareable])
-
-  return null
 }
 
-export function App() {
+function useStoreUpdateFromUrl() {
   const { updateState } = useShareableStoreAction()
 
   React.useEffect(() => {
+    // Read URL to initialize store
     const { hash } = window.location
     if (hash) {
       // TODO: use zod here for type safe conversion
-      const parsed = JSON.parse(decodeAndDecompress(hash)) as ExportedSharedState
+      // hash contains leading #
+      const parsed = JSON.parse(decodeAndDecompress(hash.substring(1))) as ExportedSharedState
       const state: SharedState = {
         ...parsed,
         syllablesColor: parsed.syllablesColor.map((color) => color ? paletteMap[color] : null)
       }
       updateState(state)
     }
+
+    // Set up listeners to update store when going back via browser actions
+    // (supports undo/redo)
+    function listener(event: PopStateEvent) {
+      // TODO: use zod for type safe conversion
+      updateState(event.state as SharedState ?? defaultStore)
+    }
+    window.addEventListener('popstate', listener)
+    return () => window.removeEventListener('popstate', listener)
   }, [])
+}
+
+// As a component rather than a hook, so that it can be called outside of the
+// main component tree, avoiding extra renders that aren't relevant
+function UpdateUrl() {
+  useUrlUpdateFromStore()
+  return null
+}
+
+export function App() {
+  useStoreUpdateFromUrl()
 
   return (
     <PickedColorProvider>
