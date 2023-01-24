@@ -58,6 +58,7 @@ function UpdateUrl() {
   return null
 }
 
+// TODO: Install new fonts (e.g. Mona/Hubot from GitHub)
 export function App() {
   useStoreUpdateFromUrl()
 
