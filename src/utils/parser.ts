@@ -38,7 +38,8 @@ const phoneticVowels = [
   'uoi',
 ];
 // https://fr.wikipedia.org/wiki/Consonne_sourde
-// n itself isn't a voiceless consonant, but as it is combined with a vowel, from a phonetic stand point, it breaks the syllable
+// n itself isn't a voiceless consonant, but as it is combined with a vowel,
+// from a phonetic stand point, it breaks the syllable
 const strongConsonants = ['b', 'c', 'd', 'g', 'k', 'p', 'q', 't', 'n'];
 const mediumConsonants = ['f', 'v', 's', 'z'];
 const specialCharacters = ["'", '-'];
@@ -57,7 +58,6 @@ const wordSeparators = [
 ];
 
 const VOWEL_REGEX = new RegExp(`([${graphicVowels.join('')}])`, 'i');
-const CONSONANT_REGEX = new RegExp(`([^${graphicVowels.join('')}])`, 'i');
 const PHONETIC_VOWEL_SPLIT_REGEX = new RegExp(
   `(${phoneticVowels.join('|')})|([${graphicVowels.join('')}])`,
   'gi'
@@ -68,9 +68,9 @@ const VOWEL_CONSONANT_SPLIT_REGEX = new RegExp(
     .join('')}]+)|([${specialCharacters.join('')}]+)`,
   'gi'
 );
-// n should be a specific edge case, as it is not really a strong consonant itself, but with
-// a vowel, it produces a new sound which is mostly always incompatible with weak consonants
-// e.g. hanse (han-se), ainsi (ain-si)
+// n should be a specific edge case, as it is not really a strong consonant
+// itself, but with a vowel, it produces a new sound which is mostly always
+// incompatible with weak consonants, e.g. hanse (han-se), ainsi (ain-si)
 // Specific edge covered with `gn` because considered as a group (sounds like `ni`)
 const VOICELESS_CONSONANT_GROUP_REGEX = new RegExp(
   `(gn|[${strongConsonants.join('')}][^${strongConsonants.join(
@@ -86,12 +86,11 @@ const WORD_SEPARATOR_SPLIT_REGEX = new RegExp(
   'g'
 );
 
-/**
- * `gn` is a whole different problem. Based on usage, it can sound like `ni`, which will be in one syllable, or `g-n`, which will be split.
- * Because of this, I'll need to reference all the usages of one of them to distinguish between these 2 sounds.
- * Though, `ni` is the most common, so that should be the default, and a specific branch should cover the `g-n` edge case.
- */
-
+// `gn` is a whole different problem. Based on usage, it can sound like `ni`,
+// which will be in one syllable, or `g-n`, which will be split. Because of this,
+// I'll need to reference all the usages of one of them to distinguish between
+// these 2 sounds. Though, `ni` is the most common, so that should be the
+// default, and a specific branch should cover the `g-n` edge case.
 export function extractSyllables(word: string) {
   const splitByVowels =
     word.match(VOWEL_CONSONANT_SPLIT_REGEX)?.reverse() ?? [];
@@ -184,96 +183,3 @@ export function extractSyllablesFromSentence(sentence: string) {
     WORD_SEPARATOR_REGEX.test(word) ? word : extractSyllables(word)
   );
 }
-
-// console.log(extractSyllables('intempesties'));
-// console.log(extractSyllables('expression'));
-// console.log(extractSyllables('materiau'));
-// console.log(extractSyllables('lointain'));
-// console.log(extractSyllables('longtemps'));
-// console.log(extractSyllables('pourquoi'));
-// console.log(extractSyllables('abnegation'));
-// console.log(extractSyllables('ablation'));
-// console.log(extractSyllables('segregation'));
-// console.log(extractSyllables('abstenir'));
-// console.log(extractSyllables('subtropical'));
-// console.log(extractSyllables('pharaon'));
-// console.log(extractSyllables('contre-temps'));
-// console.log(extractSyllables("l'marathon"));
-// console.log(extractSyllables("l'Empereur"));
-// console.log(extractSyllables('frères'));
-// console.log(extractSyllables('fleuris'));
-// console.log(extractSyllables('effleurées'));
-// console.log(extractSyllables('transaction'));
-// console.log(extractSyllables('ainsi'));
-// console.log(extractSyllables('aîné'));
-// console.log(extractSyllables('abcès'));
-// console.log(extractSyllables('abscisse'));
-// console.log(extractSyllables('piscine'));
-// console.log(extractSyllables('encaisser'));
-// console.log(extractSyllables('pneumatique'));
-// console.log(extractSyllables('apnée'));
-// console.log(extractSyllables('amphétamine'));
-// console.log(extractSyllables('trombone'));
-// console.log(extractSyllables('honteux'));
-// console.log(extractSyllables('ankylose'));
-// console.log(extractSyllables('ophtalmologue'));
-
-// const lyrics = `
-// Riche comme Salomon et beau comme Apollon
-// J'ai l'humour à Choron et l'anneau à Sauron
-// Riche comme Salomon et beau comme Apollon
-// J'ai l'humour à Choron et l'anneau à Sauron
-
-// J'préfère laisser mes enfants dans ta gorge, plutôt qu'en garderie (splash)
-// Je roule des joints qui font la taille du bâton de Gandalf le gris
-// Ici, on nique la justice, la police et la gendarmerie
-// J'me prélasse dans un palace, la femme de ménage mange ma te-bi (mange)
-// Si t'es chaude, j'ramène mes potes et j'assouvis tes fantasmes de fille
-// Transac' de weed, faut qu'je m'empare de c'fric, j'tire des grandes taffes de hish' (j'tire)
-// Je pense à dédicacer tous mes frères qui se branlent à Fleury (wow)
-// Je sors de l'ombre, faut qu'tu augmentes le son si t'entends pas c'que j'dis (t'entends)
-// Chacun son tour et son heure de gloire, maintenant tu remballes de-spee (remballes)
-// J'te conseille d'éviter le monde du rap, c'est tellement sale, petit (sale)
-// Fais comme bon te semble et profite avant que tes rents-pa te grillent
-// Mais sache que rien ne vaut d'être en famille d'vant un grand plat de riz
-
-// J'suis dans les catacombes, je vise ton canasson
-// J'sors des rimes à la s'conde, l'Empereur, le pharaon
-// Le soir, je drague ta blonde, j'vais gagner l'marathon
-// Chargeur plein d'balles à plomb, pas l'temps pour la baston
-// J'suis dans les catacombes, je vise ton canasson
-// J'sors des rimes à la s'conde, l'Empereur, le pharaon
-// Le soir, je drague ta blonde, j'vais gagner l'marathon
-// Chargeur plein d'balles à plomb, pas l'temps pour la baston
-// Tounsi
-
-// J'veux pas te faire de peine, mon sucre d'orge
-// Mais la plupart de mes frères n'ont plus d'remords
-// Mes enfants s'promènent au fond d'une gorge (splash)
-// Mets mon son dans ta voiture de sport (vroum, nion)
-// J'ai même pas réussi à décrocher l'bac
-// J'ai bien trop perdu mais, désormais, j'gagne
-// C'est l'bordel, man, j'vais te déformer l'crâne
-// C'est la goutte de sperme qui fait déborder l'vase (splash, splash, splash)
-// Elle suce des bites comme des cornets d'glace (sucepute)
-// On veut du bif' comme des monégasques (splash)
-// T'as les genoux fléchis car tu portes des bas (wow)
-// J'reviens avec du te-shi et des bords d'Espagne
-
-// J'suis dans les catacombes, je vise ton canasson
-// J'sors des rimes à la s'conde, l'Empereur, le pharaon
-// Le soir, je drague ta blonde, j'vais gagner l'marathon
-// Chargeur plein d'balles à plomb, pas l'temps pour la baston
-// J'suis dans les catacombes, je vise ton canasson
-// J'sors des rimes à la s'conde, l'Empereur, le pharaon
-// Le soir, je drague ta blonde, j'vais gagner l'marathon
-// Chargeur plein d'balles à plomb, pas l'temps pour la baston
-
-// Goûte mes macarons ou bien nous t'saccagerons
-// On y va à fond, dans ton rap à la con
-// J'le fais à ma façon, je n'accepte pas l'pardon
-// C'est pour mes vagabonds d'l'allée Louis-Aragon
-// `;
-// console.time('phrase');
-// console.log(extractSyllablesFromSentence(lyrics));
-// console.timeEnd('phrase');
