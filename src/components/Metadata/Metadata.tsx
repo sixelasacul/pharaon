@@ -51,7 +51,7 @@ export function DynamicTextInput({
     <p
       role='button'
       tabIndex={0}
-      className={clsx({ 'italic': !externalValue }, className)}
+      className={clsx({ 'oblique opacity-75': !externalValue }, className)}
       onFocus={startEditing}
     >
       {externalValue ? format(externalValue) : name}
@@ -67,12 +67,12 @@ export function SongMetadata() {
   return (
     <div className='grid grid-cols-1 gap-2 max-w-lg'>
       <DynamicTextInput
-        name='Song name'
+        name='Nom du son'
         externalValue={name}
         onEditDone={(name) => updateState({ name })}
         />
       <DynamicTextInput
-        name='Song artist(s)'
+        name='Artiste(s)'
         className='text-right'
         externalValue={artists}
         format={artists => `- ${artists}`}

@@ -15,6 +15,16 @@ interface Store extends SharedState {
   updateSyllablesColor(index: number, color: Color | null): void
 }
 
+function shortenSyllablesColor(syllablesColor: (Color | null)[]): string[] {
+  return Array.from(syllablesColor, (color) => color ? shortenNameColor(color) : '')
+}
+function compressState({ syllablesColor, ...state }: SharedState): string {
+  return compressAndEncode(JSON.stringify({
+    ...state,
+    syllablesColor: shortenSyllablesColor(syllablesColor)
+  }))
+}
+
 export const defaultStore: SharedState = {
   name: '',
   artists: '',
@@ -33,19 +43,18 @@ const useStore = create<Store>((set) => ({
   shareable: '',
   updateState(next) {
     return set(({ shareable: _, ...state }) => {
-      const newState: SharedState = {
-        ...state,
-        ...next
-      }
       // Updated the colors if the lyrics have changed, but still pass through
       // if the colors are updated (when parsing URL's state)
       const haveLyricsChanged = !!next?.lyrics && next.lyrics === state.lyrics
-      const areColorsUpdated = !!next?.syllablesColor
-      const newSyllablesColor = areColorsUpdated ? next.syllablesColor : haveLyricsChanged ? [] : state.syllablesColor
+      const newSyllablesColor = !!next?.syllablesColor ? next.syllablesColor : haveLyricsChanged ? [] : state.syllablesColor
+      // When syllables color are passed, we need to shorten their names for the shareable, like in updateSyllablesColor
       return {
         ...next,
-        syllablesColor: newSyllablesColor,
-        shareable: compressAndEncode(JSON.stringify(newState))
+        shareable: compressState({
+          ...state,
+          ...next,
+          syllablesColor: newSyllablesColor
+        })
       }
     })
   },
@@ -56,10 +65,9 @@ const useStore = create<Store>((set) => ({
       // get stringified as `null` (2 chars per empty value saved); probably
       // not worth it though.
       // To save space, instead of colors, we could save a short code/number from the palette
-      const simplifiedSyllablesColor = Array.from(state.syllablesColor, (color) => color ? shortenNameColor(color) : '')
       return {
         syllablesColor: state.syllablesColor,
-        shareable: compressAndEncode(JSON.stringify({ ...state, syllablesColor: simplifiedSyllablesColor }))
+        shareable: compressState(state)
       }
     })
   }

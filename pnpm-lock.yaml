@@ -22,6 +22,7 @@ specifiers:
   use-clipboard-copy: ^0.2.0
   uuid: ^9.0.0
   vite: ^4.0.0
+  zod: ^3.20.2
   zustand: ^4.3.2
 
 dependencies:
@@ -35,6 +36,7 @@ dependencies:
   react-dom: 18.2.0_react@18.2.0
   use-clipboard-copy: 0.2.0_react@18.2.0
   uuid: 9.0.0
+  zod: 3.20.2
   zustand: 4.3.2_react@18.2.0
 
 devDependencies:
@@ -799,6 +801,7 @@ packages:
     resolution: {integrity: sha512-eq5KcuXajf2OmivCl4e89AD3j8fbV+UTE9vczEzq5haA07U9oOTzBWlh3+6ZdjJR7Rz2QfWZ2uxZyhZxBgJ4+g==}
     engines: {node: '>=12'}
     hasBin: true
+    requiresBuild: true
     optionalDependencies:
       '@esbuild/android-arm': 0.16.12
       '@esbuild/android-arm64': 0.16.12
@@ -1362,6 +1365,10 @@ packages:
     resolution: {integrity: sha512-r3vXyErRCYJ7wg28yvBY5VSoAF8ZvlcW9/BwUzEtUsjvX/DKs24dIkuwjtuprwJJHsbyUbLApepYTR1BN4uHrg==}
     engines: {node: '>= 6'}
     dev: true
+
+  /zod/3.20.2:
+    resolution: {integrity: sha512-1MzNQdAvO+54H+EaK5YpyEy0T+Ejo/7YLHS93G3RnYWh5gaotGHwGeN/ZO687qEDU2y4CdStQYXVHIgrUl5UVQ==}
+    dev: false
 
   /zustand/4.3.2_react@18.2.0:
     resolution: {integrity: sha512-rd4haDmlwMTVWVqwvgy00ny8rtti/klRoZjFbL/MAcDnmD5qSw/RZc+Vddstdv90M5Lv6RPgWvm1Hivyn0QgJw==}
