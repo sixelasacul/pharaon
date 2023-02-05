@@ -1,22 +1,29 @@
 import { create } from 'zustand'
-import { noColor, shortenNameColor } from '../../components/Palette'
+import { shortenNameColor } from '../../components/Palette'
 import { compressAndEncode } from '../../utils/compressor'
 import { Color } from '../PickedColorContext'
+import { SharedState } from './schemas'
 
-export interface SharedState {
-  lyrics: string
-  artists: string
-  name: string
-  syllablesColor: (Color | null)[]
-}
 interface Store extends SharedState {
   shareable: string
   updateState(next: Partial<SharedState>): void
   updateSyllablesColor(index: number, color: Color | null): void
 }
 
-function shortenSyllablesColor(syllablesColor: (Color | null)[]): string[] {
-  return Array.from(syllablesColor, (color) => color ? shortenNameColor(color) : '')
+export const defaultStore: SharedState = {
+  name: '',
+  artists: '',
+  lyrics: '',
+  syllablesColor: new Map()
+}
+
+function shortenSyllablesColor(syllablesColor: SharedState['syllablesColor']) {
+  // Instead of colors, we save a short code from the palette
+  const shortened: [number, string][] = []
+  for (const [index, color] of syllablesColor) {
+    shortened.push([index, shortenNameColor(color)])
+  }
+  return shortened
 }
 function compressState({ syllablesColor, ...state }: SharedState): string {
   return compressAndEncode(JSON.stringify({
@@ -24,33 +31,32 @@ function compressState({ syllablesColor, ...state }: SharedState): string {
     syllablesColor: shortenSyllablesColor(syllablesColor)
   }))
 }
-
-export const defaultStore: SharedState = {
-  name: '',
-  artists: '',
-  lyrics: '',
-  syllablesColor: []
+function isDefaultStore(next: Partial<SharedState>) {
+  const keys = Object.keys(defaultStore) as (keyof SharedState)[]
+  return keys.every((key) => {
+    if(key === 'syllablesColor') {
+      return next[key]?.size === defaultStore[key].size
+    }
+    return next[key] === defaultStore[key]
+  })
 }
 
 // The advantage of the zustand store compared to the React context is that we
 // can use selector to prevent extra renders where we don't read the state
 // (we only use the actions in most components, except when sharing the link)
 const useStore = create<Store>((set) => ({
-  name: '',
-  artists: '',
-  lyrics: '',
-  syllablesColor: [],
+  ...defaultStore,
   shareable: '',
   updateState(next) {
     return set(({ shareable: _, ...state }) => {
       // Updated the colors if the lyrics have changed, but still pass through
       // if the colors are updated (when parsing URL's state)
       const haveLyricsChanged = !!next?.lyrics && next.lyrics === state.lyrics
-      const newSyllablesColor = !!next?.syllablesColor ? next.syllablesColor : haveLyricsChanged ? [] : state.syllablesColor
-      // When syllables color are passed, we need to shorten their names for the shareable, like in updateSyllablesColor
+      const newSyllablesColor = !!next?.syllablesColor ? next.syllablesColor : haveLyricsChanged ? defaultStore.syllablesColor : state.syllablesColor
       return {
         ...next,
-        shareable: compressState({
+        // We want a clean URL when the store is unchanged, thus not compressing it
+        shareable: isDefaultStore(next) ? '' : compressState({
           ...state,
           ...next,
           syllablesColor: newSyllablesColor
@@ -58,13 +64,13 @@ const useStore = create<Store>((set) => ({
       }
     })
   },
-  updateSyllablesColor(index: number, color: Color) {
+  updateSyllablesColor(index, color) {
     return set(({ shareable: _, ...state }) => {
-      state.syllablesColor[index] = color
-      // Replaces `empty` values to empty string to save some space, as they
-      // get stringified as `null` (2 chars per empty value saved); probably
-      // not worth it though.
-      // To save space, instead of colors, we could save a short code/number from the palette
+      if(color) {
+        state.syllablesColor.set(index, color)
+      } else {
+        state.syllablesColor.delete(index)
+      }
       return {
         syllablesColor: state.syllablesColor,
         shareable: compressState(state)

@@ -20,7 +20,7 @@ function Syllable({ index, children }: React.PropsWithChildren<SyllableProps>) {
   // Prefer null rather than undefined
   const [pickedColor = null] = usePickedColor()
   const { updateSyllablesColor } = useShareableStoreAction()
-  const color = useShareableStore((state) => state.syllablesColor[index])
+  const color = useShareableStore((state) => state.syllablesColor.get(index))
 
   return (
     <InternalSyllable

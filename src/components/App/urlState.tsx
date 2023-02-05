@@ -2,6 +2,17 @@ import * as React from "react";
 import { useShareableStore, useShareableStoreAction, defaultStore, stateSchema, urlStateSchema } from "../../state/shareableStore";
 import { decodeAndDecompress } from "../../utils/compressor";
 
+function logError(description: string, data: unknown, error: unknown) {
+  if(import.meta.env.DEV) {
+    console.group(description)
+    console.error(data)
+    console.error(error)
+    console.groupEnd()
+  } else {
+    console.warn(description)
+  }
+}
+
 export function useStoreUpdateFromUrl() {
   const { updateState } = useShareableStoreAction()
 
@@ -15,7 +26,7 @@ export function useStoreUpdateFromUrl() {
         const parsedWithSchema = urlStateSchema.parse(parsedFromUrl)
         updateState(parsedWithSchema)
       } catch(e) {
-        console.warn('Invalid state in URL', hash)
+        logError('Invalid state in URL', hash, e)
       }
     }
 
@@ -23,10 +34,10 @@ export function useStoreUpdateFromUrl() {
     // (supports undo/redo)
     function listener(event: PopStateEvent) {
       try {
-        const parsedWithSchema = stateSchema.parse(event.state)
-        updateState(parsedWithSchema ?? defaultStore)
+        const parsedWithSchema = event.state ? stateSchema.parse(event.state) : defaultStore
+        updateState(parsedWithSchema)
       } catch(e) {
-        console.warn('Invalid state in popstate event', event.state)
+        logError('Invalid state in popstate event', event.state, e)
       }
     }
     window.addEventListener('popstate', listener)
