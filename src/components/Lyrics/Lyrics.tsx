@@ -79,10 +79,10 @@ export function Lyrics() {
         </IconButton>
         <ShareButton />
       </QuickAction>
-      <div className='max-w-lg w-full h-full border-red-200 font-medium tracking-wide semi-expanded'>
+      <div className='max-w-lg w-full h-full border-red-200'>
         {isEditing ? (
           <textarea
-            className="h-full w-full bg-transparent resize-none -mb-1"
+            className="h-full w-full bg-transparent resize-none -mb-1 font-medium tracking-wide semi-expanded"
             value={editedLyrics}
             onChange={(e) => setEditedLyrics(e.target.value)}
             onKeyDown={(e) => {
@@ -94,7 +94,7 @@ export function Lyrics() {
             }}
           ></textarea>
         ) : (
-          <p className={clsx("whitespace-pre-line h-full", {'oblique opacity-75': syllables.length === 0})}>
+          <p className={clsx("whitespace-pre-line h-full font-medium tracking-wide semi-expanded", {'oblique opacity-75': syllables.length === 0})}>
             {syllables.length > 0 ? (
               syllables.map(({ id, content }, index) => {
                 // If it has a space, that means it's not a syllable
