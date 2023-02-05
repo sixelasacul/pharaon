@@ -20,7 +20,7 @@ export const palette: Color[] = [
   },
   {
     name: 'amber',
-    base: 'bg-amber-200',
+    base: 'bg-amber-300',
     hover: 'hover:bg-amber-400',
     border: 'border-amber-400',
   },
@@ -67,6 +67,7 @@ export function shortenNameColor(color: Color) {
 }
 
 export const paletteMap = palette.reduce<ColorMap>((acc, color) => {
+  acc[color.name] = color
   acc[shortenNameColor(color)] = color
   return acc
 }, {})

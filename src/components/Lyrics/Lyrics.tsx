@@ -9,6 +9,9 @@ import { noColor } from '../Palette';
 import { QuickAction } from '../QuickActions';
 import { IconButton } from '../IconButton';
 import { ShareButton } from '../ShareButton';
+import { Syllable as InternalSyllable } from '../Syllable';
+
+const DEFAULT_TEXT = 'Ajouter un texte en cliquant sur le crayon en haut à droite'
 
 interface SyllableProps {
   index: number
@@ -17,17 +20,15 @@ function Syllable({ index, children }: React.PropsWithChildren<SyllableProps>) {
   // Prefer null rather than undefined
   const [pickedColor = null] = usePickedColor()
   const { updateSyllablesColor } = useShareableStoreAction()
-  const color = useShareableStore((state) => state.syllablesColor[index])
-  const { base, hover } = color ?? noColor
+  const color = useShareableStore((state) => state.syllablesColor.get(index))
 
   return (
-    <span
-      role="button"
-      className={clsx('select-all', base, hover)}
+    <InternalSyllable
+      color={color ?? noColor}
       onClick={() => updateSyllablesColor(index, pickedColor)}
     >
       {children}
-    </span>
+    </InternalSyllable>
   );
 }
 
@@ -62,7 +63,7 @@ export function Lyrics() {
   }
 
   return (
-    <div className="flex flex-col items-center overflow-y-auto pl-4 pt-4 w-full h-full">
+    <div className="flex flex-col items-center overflow-y-auto w-full h-full">
       <QuickAction>
         <IconButton
           onClick={toggleEdit}
@@ -81,11 +82,12 @@ export function Lyrics() {
       <div className='max-w-lg w-full h-full border-red-200'>
         {isEditing ? (
           <textarea
-            className="h-full w-full bg-transparent resize-none -mb-1"
+            className="h-full w-full bg-transparent resize-none -mb-1 font-medium tracking-wide semi-expanded placeholder:oblique"
+            placeholder={DEFAULT_TEXT}
             value={editedLyrics}
             onChange={(e) => setEditedLyrics(e.target.value)}
             onKeyDown={(e) => {
-              if(e.key === 'Enter') {
+              if(e.key === 'Enter' && e.shiftKey) {
                 doneEditing()
               } else if(e.key === 'Escape') {
                 cancelEditing()
@@ -93,15 +95,17 @@ export function Lyrics() {
             }}
           ></textarea>
         ) : (
-          <p className="whitespace-pre-line h-full">
-            {syllables.map(({ id, content }, index) => {
-              // If it has a space, that means it's not a syllable
-              if(/\s/i.test(content)) {
-                return content
-              } else {
-                return <Syllable key={id} index={index}>{content}</Syllable>
-              }
-            })}
+          <p className={clsx("whitespace-pre-line h-full font-medium tracking-wide semi-expanded", {'oblique opacity-75': syllables.length === 0})}>
+            {syllables.length > 0 ? (
+              syllables.map(({ id, content }, index) => {
+                // If it has a space, that means it's not a syllable
+                if(/\s/i.test(content)) {
+                  return content
+                } else {
+                  return <Syllable key={id} index={index}>{content}</Syllable>
+                }
+              })
+            ) : DEFAULT_TEXT}
           </p>
         )}
       </div>
