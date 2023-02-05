@@ -34,6 +34,7 @@ export function DynamicTextInput({
       <input
         ref={node => node?.focus()}
         type='text'
+        className={clsx('bg-transparent placeholder:oblique w-full', className)}
         placeholder={name}
         value={value}
         onChange={e => setValue(e.target.value)}
@@ -65,7 +66,7 @@ export function SongMetadata() {
   const artists = useShareableStore((state) => state.artists)
   
   return (
-    <div className='grid grid-cols-1 gap-2 max-w-lg'>
+    <div className='grid grid-cols-1 gap-2 max-w-xs w-full'>
       <DynamicTextInput
         name='Nom du son'
         externalValue={name}

@@ -82,7 +82,8 @@ export function Lyrics() {
       <div className='max-w-lg w-full h-full border-red-200'>
         {isEditing ? (
           <textarea
-            className="h-full w-full bg-transparent resize-none -mb-1 font-medium tracking-wide semi-expanded"
+            className="h-full w-full bg-transparent resize-none -mb-1 font-medium tracking-wide semi-expanded placeholder:oblique"
+            placeholder={DEFAULT_TEXT}
             value={editedLyrics}
             onChange={(e) => setEditedLyrics(e.target.value)}
             onKeyDown={(e) => {
