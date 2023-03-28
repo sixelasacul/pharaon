@@ -11,6 +11,7 @@
   "dependencies": {
     "@headlessui/react": "^1.7.7",
     "@heroicons/react": "^2.0.13",
+    "@preact/signals-react": "^1.2.2",
     "clsx": "^1.2.1",
     "js-base64": "^3.7.4",
     "lz-string": "^1.4.4",

@@ -1,5 +1,6 @@
 import * as React from "react";
-import { useShareableStore, useShareableStoreAction, defaultStore, stateSchema, urlStateSchema } from "../../state/shareableStore";
+// import { useShareableStore, useShareableStoreAction, defaultStore, stateSchema, urlStateSchema } from "../../state/shareableStore";
+import { store, shareable, updateState, defaultStore, stateSchema, urlStateSchema } from "../../state/shareableStore";
 import { decodeAndDecompress } from "../../utils/compressor";
 
 function logError(description: string, data: unknown, error: unknown) {
@@ -14,8 +15,6 @@ function logError(description: string, data: unknown, error: unknown) {
 }
 
 export function useStoreUpdateFromUrl() {
-  const { updateState } = useShareableStoreAction()
-
   React.useEffect(() => {
     // Read URL to initialize store
     const { hash } = window.location
@@ -46,13 +45,11 @@ export function useStoreUpdateFromUrl() {
 }
 
 function useUrlUpdateFromStore() {
-  const { shareable, ...rest } = useShareableStore(({ updateState, updateSyllablesColor, ...rest }) => rest)
-
   React.useEffect(() => {
     // hash contains leading #
     const hash = window.location.hash.substring(1)
-    if (shareable && shareable !== hash) {
-      window.history.pushState(rest, '', `#${shareable}`)
+    if (shareable.value && shareable.value !== hash) {
+      window.history.pushState(store.value, '', `#${shareable}`)
     }
   }, [shareable])
 }
