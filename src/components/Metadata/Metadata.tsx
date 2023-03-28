@@ -1,6 +1,7 @@
 import * as React from 'react'
 import clsx from 'clsx';
-import { useShareableStore, useShareableStoreAction } from '../../state/shareableStore';
+import { useSignal } from '@preact/signals-react'
+import { store, updateState } from '../../state/shareableStore';
 
 interface DynamicTextInputProps {
   name: string
@@ -17,16 +18,19 @@ export function DynamicTextInput({
   onEditDone
 }: DynamicTextInputProps) {
   // Could be a hook, as it is a very similar logic as in Lyrics
-  const [value, setValue] = React.useState('')
+  // const [value, setValue] = React.useState('')
+  const text = useSignal('')
   const [isEditing, setIsEditing] = React.useState(false)
 
   function startEditing() {
-    setValue(externalValue)
+    // setValue(externalValue)
+    text.value = externalValue
     setIsEditing(true)
   }
   function doneEditing() {
     setIsEditing(false)
-    onEditDone?.(value)
+    // onEditDone?.(value)
+    onEditDone?.(text.value)
   }
 
   if (isEditing) {
@@ -36,8 +40,10 @@ export function DynamicTextInput({
         type='text'
         className={clsx('bg-transparent placeholder:oblique w-full', className)}
         placeholder={name}
-        value={value}
-        onChange={e => setValue(e.target.value)}
+        // value={value}
+        value={text.value}
+        // onChange={e => setValue(e.target.value)}
+        onChange={e => text.value = e.target.value}
         onBlur={doneEditing}
         onKeyDown={(e) => {
           if(e.key === 'Enter') {
@@ -61,23 +67,22 @@ export function DynamicTextInput({
 }
 
 export function SongMetadata() {
-  const { updateState } = useShareableStoreAction()
-  const name = useShareableStore((state) => state.name)
-  const artists = useShareableStore((state) => state.artists)
+  const name = store.value.name
+  const artists = store.value.artists
   
   return (
     <div className='grid grid-cols-1 gap-2 max-w-xs w-full'>
       <DynamicTextInput
         name='Nom du son'
         externalValue={name}
-        onEditDone={(name) => updateState({ name })}
-        />
+        onEditDone={(updatedName) => updateState({ name: updatedName })}
+      />
       <DynamicTextInput
         name='Artiste(s)'
         className='text-right'
         externalValue={artists}
         format={artists => `- ${artists}`}
-        onEditDone={(artists) => updateState({ artists })}
+        onEditDone={(updatedArtists) => updateState({ artists: updatedArtists })}
       />
     </div>
   )

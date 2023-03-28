@@ -1,10 +1,12 @@
+import * as React from 'react';
 import clsx from 'clsx';
-import * as React from 'react'
+import { signal, useSignal, effect } from '@preact/signals-react'
 import { PencilIcon, XMarkIcon, PrinterIcon } from '@heroicons/react/24/solid';
 import { identifyArrayItems } from '../../utils/identifyArrayItems';
 import { extractSyllablesFromSentence } from '../../utils/parser';
 import { usePickedColor } from '../../state/PickedColorContext';
-import { useShareableStoreAction, useShareableStore } from '../../state/shareableStore';
+// import { useShareableStoreAction, useShareableStore } from '../../state/shareableStore';
+import { store, updateState, updateSyllablesColor } from '../../state/shareableStore';
 import { noColor } from '../Palette';
 import { QuickAction } from '../QuickActions';
 import { IconButton } from '../IconButton';
@@ -19,8 +21,7 @@ interface SyllableProps {
 function Syllable({ index, children }: React.PropsWithChildren<SyllableProps>) {
   // Prefer null rather than undefined
   const [pickedColor = null] = usePickedColor()
-  const { updateSyllablesColor } = useShareableStoreAction()
-  const color = useShareableStore((state) => state.syllablesColor.get(index))
+  const color = store.value.syllablesColor.get(index)
 
   return (
     <InternalSyllable
@@ -32,27 +33,31 @@ function Syllable({ index, children }: React.PropsWithChildren<SyllableProps>) {
   );
 }
 
+const editedLyrics = signal('')
+ 
 export function Lyrics() {
   const [isEditing, setIsEditing] = React.useState(false)
-  const [editedLyrics, setEditedLyrics] = React.useState('')
-  const lyrics = useShareableStore((state) => state.lyrics)
-  const { updateState } = useShareableStoreAction()
+  // const [editedLyrics, setEditedLyrics] = React.useState('')
+  const lyrics = store.value.lyrics
   const syllables = React.useMemo(
     () => identifyArrayItems(extractSyllablesFromSentence(lyrics)),
     [lyrics]
   );
 
   function startEditing() {
-    setEditedLyrics(lyrics)
+    // setEditedLyrics(lyrics)
+    editedLyrics.value = lyrics
     setIsEditing(true)
   }
   function doneEditing() {
     setIsEditing(false)
-    updateState({ lyrics: editedLyrics })
+    console.log(editedLyrics.value)
+    updateState({ lyrics: editedLyrics.value })
   }
   function cancelEditing() {
     setIsEditing(false)
-    setEditedLyrics(lyrics)
+    // setEditedLyrics(lyrics)
+    editedLyrics.value = lyrics
   }
   function toggleEdit() {
     if(isEditing) {
@@ -84,8 +89,10 @@ export function Lyrics() {
           <textarea
             className="h-full w-full bg-transparent resize-none -mb-1 font-medium tracking-wide semi-expanded placeholder:oblique"
             placeholder={DEFAULT_TEXT}
-            value={editedLyrics}
-            onChange={(e) => setEditedLyrics(e.target.value)}
+            value={editedLyrics.value}
+            onChange={(e) => {
+              editedLyrics.value = e.target.value
+            }}
             onKeyDown={(e) => {
               if(e.key === 'Enter' && e.shiftKey) {
                 doneEditing()
