@@ -7,13 +7,15 @@ const graphicVowels = [
   'o',
   'u',
   'y',
+  'â',
   'é',
   'è',
   'ê',
-  'â',
   'ë',
   'ï',
   'î',
+  'ù',
+  'û'
 ];
 const phoneticVowels = [
   'ée',
@@ -29,20 +31,22 @@ const phoneticVowels = [
   'ui',
   'oui',
   'ai',
+  'aî',
   'ay',
   'ey',
   'uy',
   'oi',
   'oy',
   'ue',
-  'uoi',
+  'uoi'
 ];
 // https://fr.wikipedia.org/wiki/Consonne_sourde
 // n itself isn't a voiceless consonant, but as it is combined with a vowel,
 // from a phonetic stand point, it breaks the syllable
-const strongConsonants = ['b', 'c', 'd', 'g', 'k', 'p', 'q', 't', 'n'];
+const strongConsonants = ['b', 'c', 'd', 'g', 'k', 'p', 'q', 't', 'n', 'm'];
 const mediumConsonants = ['f', 'v', 's', 'z'];
-const specialCharacters = ["'", '-'];
+// TODO: " at the beginning of the word is grouped with the syllable, but not at the end
+const specialCharacters = ["'", '"', '-'];
 const wordSeparators = [
   '\\s',
   '\\r',
@@ -54,7 +58,7 @@ const wordSeparators = [
   '?',
   '\\-',
   '(',
-  ')',
+  ')'
 ];
 
 const VOWEL_REGEX = new RegExp(`([${graphicVowels.join('')}])`, 'i');
@@ -65,8 +69,16 @@ const PHONETIC_VOWEL_SPLIT_REGEX = new RegExp(
 const VOWEL_CONSONANT_SPLIT_REGEX = new RegExp(
   `([${graphicVowels.join('')}]+)|([^${graphicVowels
     .concat(specialCharacters)
-    .join('')}]+)|([${specialCharacters.join('')}]+)`,
+    .join('')}\\d]+)|([${specialCharacters.join('')}\\d]+)`,
   'gi'
+);
+const IS_STRONG_CONSONANT = new RegExp(
+  `[${strongConsonants.join('')}]`,
+  'i'
+);
+const IS_SPECIAL_CHARACTER = new RegExp(
+  `[${specialCharacters.join('')}]`,
+  'i'
 );
 // n should be a specific edge case, as it is not really a strong consonant
 // itself, but with a vowel, it produces a new sound which is mostly always
@@ -99,9 +111,15 @@ export function extractSyllables(word: string) {
 
   splitByVowels.forEach((group, index) => {
     const isVowelGroup = VOWEL_REGEX.test(group);
-    const isSpecialCharacter = specialCharacters.includes(group);
+    const isSpecialCharacter = IS_SPECIAL_CHARACTER.test(group);
+    const isNumber = /\d+/.test(group);
     const hasVowelsInSyllable = VOWEL_REGEX.test(currentSyllable);
-    if (currentSyllable.length === 0 && !isVowelGroup) {
+    
+    if (isNumber) {
+      syllables.unshift(currentSyllable);
+      syllables.unshift(group);
+      currentSyllable = '';
+    } else if (currentSyllable.length === 0 && !isVowelGroup) {
       currentSyllable = group;
     } else if (index === splitByVowels.length - 1 && !isVowelGroup) {
       currentSyllable = group + currentSyllable;
@@ -120,7 +138,8 @@ export function extractSyllables(word: string) {
           const vowel = matches;
           currentSyllable = vowel + currentSyllable;
         } else {
-          console.error('could not parse vowel group: ', group);
+          console.warn('could not parse vowel group: ', group);
+          currentSyllable = matches?.join('') + currentSyllable;
         }
       } else {
         currentSyllable = group + currentSyllable;
@@ -159,6 +178,12 @@ export function extractSyllables(word: string) {
           syllables.unshift(currentSyllable);
           currentSyllable = '';
         }
+      } else if (IS_STRONG_CONSONANT.test(group.at(-1)!!)) {
+        const rest = group.slice(0, group.length - 1);
+        const last = group.at(-1)!!;
+        currentSyllable = last + currentSyllable;
+        syllables.unshift(currentSyllable);
+        currentSyllable = rest;
       } else {
         const [first, last] = group.split('');
         currentSyllable = last + currentSyllable;
