@@ -38,7 +38,9 @@ const phoneticVowels = [
   'oi',
   'oy',
   'ue',
-  'uoi'
+  'uoi',
+  'oie',
+  'ué'
 ];
 // https://fr.wikipedia.org/wiki/Consonne_sourde
 // n itself isn't a voiceless consonant, but as it is combined with a vowel,
