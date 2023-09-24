@@ -1,21 +1,21 @@
-import { PickedColorProvider } from "../../state/PickedColorContext";
-import { Lyrics } from "../Lyrics";
-import { SongMetadata } from "../Metadata";
-import { Palette } from "../Palette";
-import { QuickActionsContainer } from "../QuickActions";
-import { Title } from "../Title";
-import { UpdateUrl, useStoreUpdateFromUrl } from "./urlState";
+import { PickedColorProvider } from '../../state/PickedColorContext'
+import { Lyrics } from '../Lyrics'
+import { SongMetadata } from '../Metadata'
+import { Palette } from '../Palette'
+import { QuickActionsContainer } from '../QuickActions'
+import { Title } from '../Title'
+import { UpdateUrl, useStoreUpdateFromUrl } from './urlState'
 
 export function App() {
   useStoreUpdateFromUrl()
 
   return (
     <PickedColorProvider>
-      <div className="flex flex-row h-screen overflow-hidden gap-4 bg-slate-50 print:bg-transparent">
-        <div className="m-2 print:hidden">
+      <div className='flex h-screen flex-row gap-4 overflow-hidden bg-slate-50 print:bg-transparent'>
+        <div className='m-2 print:hidden'>
           <Title />
         </div>
-        <div className='flex flex-col items-center gap-4 flex-1'>
+        <div className='flex flex-1 flex-col items-center gap-4'>
           <SongMetadata />
           <Lyrics />
         </div>
@@ -27,5 +27,5 @@ export function App() {
       </div>
       <UpdateUrl />
     </PickedColorProvider>
-  );
+  )
 }
