@@ -4,9 +4,13 @@ export function getRandomIntInclusive(min: number, max: number) {
   return Math.floor(Math.random() * (intMax - intMin + 1) + intMin)
 }
 
-export function getUniqueRandomIntListInclusive(min: number, max: number, count: number) {
+export function getUniqueRandomIntListInclusive(
+  min: number,
+  max: number,
+  count: number
+) {
   const uniques = new Set<number>()
-  while(uniques.size < count) {
+  while (uniques.size < count) {
     uniques.add(getRandomIntInclusive(min, max))
   }
   return [...uniques.values()]

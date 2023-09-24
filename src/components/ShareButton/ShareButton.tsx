@@ -1,5 +1,5 @@
-import { useClipboard } from 'use-clipboard-copy'
 import { ShareIcon } from '@heroicons/react/24/solid'
+import { useClipboard } from 'use-clipboard-copy'
 import { IconButton } from '../IconButton'
 
 export function ShareButton() {
@@ -7,7 +7,9 @@ export function ShareButton() {
 
   return (
     <IconButton
-      onClick={() => copy(window.location.href)}
+      onClick={() => {
+        copy(window.location.href)
+      }}
     >
       <ShareIcon />
     </IconButton>

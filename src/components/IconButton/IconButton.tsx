@@ -1,8 +1,11 @@
-export function IconButton({ children, ...props }: React.PropsWithChildren<React.ButtonHTMLAttributes<HTMLButtonElement>>) {
+export function IconButton({
+  children,
+  ...props
+}: React.PropsWithChildren<React.ButtonHTMLAttributes<HTMLButtonElement>>) {
   return (
     <button
       {...props}
-      className="h-4 w-4 p-2 box-content rounded-full shadow enabled:hover:bg-black/10 print:hidden bg-white disabled:opacity-75"
+      className='box-content h-4 w-4 rounded-full bg-white p-2 shadow enabled:hover:bg-black/10 disabled:opacity-75 print:hidden'
     >
       {children}
     </button>
