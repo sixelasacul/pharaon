@@ -9,10 +9,9 @@ export interface Color {
 
 type PickedColorContextType = ReturnType<typeof React.useState<Color>>
 
-const PickedColorContext = React.createContext<PickedColorContextType>([
-  undefined,
-  () => undefined
-])
+const defaultContextValue: PickedColorContextType = [undefined, () => undefined]
+const PickedColorContext =
+  React.createContext<PickedColorContextType>(defaultContextValue)
 
 export function PickedColorProvider({ children }: React.PropsWithChildren) {
   const colorState = React.useState<Color>()
@@ -25,7 +24,7 @@ export function PickedColorProvider({ children }: React.PropsWithChildren) {
 
 export function usePickedColor() {
   const ctx = React.useContext(PickedColorContext)
-  if (ctx[0] !== undefined) {
+  if (ctx === defaultContextValue) {
     throw new Error('No PickedColorContext available')
   }
   return ctx
