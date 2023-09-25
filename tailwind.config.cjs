@@ -8,6 +8,10 @@ module.exports = {
       fontFamily: {
         sans: ['"Mona Sans"'],
         headline: ['"Hubot Sans"']
+      },
+      gridTemplateColumns: {
+        '2-left': 'minmax(0, 1fr) max-content',
+        '3-central': 'max-content minmax(0, 1fr) max-content'
       }
     }
   },
