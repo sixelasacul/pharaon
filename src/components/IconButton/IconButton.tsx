@@ -5,7 +5,7 @@ export function IconButton({
   return (
     <button
       {...props}
-      className='box-content h-4 w-4 rounded-full bg-white p-2 shadow enabled:hover:bg-black/10 disabled:opacity-75 print:hidden'
+      className='box-content h-5 w-5 rounded-full bg-white p-2 shadow enabled:hover:bg-black/10 disabled:opacity-75 print:hidden'
     >
       {children}
     </button>

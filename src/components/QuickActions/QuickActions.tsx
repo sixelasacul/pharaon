@@ -7,7 +7,7 @@ export function QuickActionsContainer() {
   return (
     <div
       id={QUICK_ACTIONS_ID}
-      className='flex flex-col items-end gap-2 p-4'
+      className='flex flex-col items-end gap-2 p-2 md:p-4'
     ></div>
   )
 }

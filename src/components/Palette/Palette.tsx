@@ -6,17 +6,17 @@ export function Palette() {
   const [pickedColor, setPickedColor] = usePickedColor()
   // Round palette, like actual paint palette?
   return (
-    <div className='grid grid-cols-2 gap-2 rounded-l bg-white p-2 shadow-md print:hidden'>
+    <div className='grid grid-cols-1 place-items-center gap-2 rounded-l bg-white p-2 shadow-md print:hidden md:grid-cols-2'>
       {palette.map((color) => (
         <button
           key={color.base}
           className={clsx(
-            'h-6 w-6 rounded-full',
+            'h-5 w-5 rounded-full',
             color.base,
             color.hover,
             color.border,
             {
-              border: pickedColor === color
+              'border-2': pickedColor === color
             }
           )}
           onClick={() => {

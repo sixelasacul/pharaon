@@ -1,4 +1,4 @@
-import { PencilIcon, XMarkIcon, PrinterIcon } from '@heroicons/react/24/solid'
+import { PencilIcon, XMarkIcon, PrinterIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import * as React from 'react'
 import { usePickedColor } from '../../state/PickedColorContext'
@@ -69,7 +69,7 @@ export function Lyrics() {
   }
 
   return (
-    <div className='flex h-full w-full flex-col items-center overflow-y-auto'>
+    <>
       <QuickAction>
         <IconButton onClick={toggleEdit}>
           {isEditing ? <XMarkIcon /> : <PencilIcon />}
@@ -80,7 +80,7 @@ export function Lyrics() {
         </IconButton>
         <ShareButton />
       </QuickAction>
-      <div className='h-full w-full max-w-lg border-red-200'>
+      <div className='h-full w-full max-w-lg overflow-y-scroll border-red-200'>
         {isEditing ? (
           <textarea
             className='-mb-1 h-full w-full resize-none bg-transparent font-medium tracking-wide semi-expanded placeholder:oblique'
@@ -100,7 +100,7 @@ export function Lyrics() {
         ) : (
           <p
             className={clsx(
-              'h-full whitespace-pre-line font-medium tracking-wide semi-expanded',
+              'h-max whitespace-pre-line font-medium tracking-wide semi-expanded',
               { 'opacity-75 oblique': syllables.length === 0 }
             )}
           >
@@ -121,6 +121,6 @@ export function Lyrics() {
           </p>
         )}
       </div>
-    </div>
+    </>
   )
 }

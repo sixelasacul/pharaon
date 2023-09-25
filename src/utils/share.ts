@@ -1,6 +1,6 @@
-export function canShare() {
+export function canNavigatorShare(url: string) {
   if ('canShare' in navigator) {
-    return navigator.canShare()
+    return navigator.canShare({ url })
   }
   return false
 }
