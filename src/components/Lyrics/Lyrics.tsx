@@ -69,7 +69,7 @@ export function Lyrics() {
   }
 
   return (
-    <div className='flex h-full w-full flex-col items-center'>
+    <>
       <QuickAction>
         <IconButton onClick={toggleEdit}>
           {isEditing ? <XMarkIcon /> : <PencilIcon />}
@@ -100,7 +100,7 @@ export function Lyrics() {
         ) : (
           <p
             className={clsx(
-              'h-full whitespace-pre-line font-medium tracking-wide semi-expanded',
+              'h-max whitespace-pre-line font-medium tracking-wide semi-expanded',
               { 'opacity-75 oblique': syllables.length === 0 }
             )}
           >
@@ -121,6 +121,6 @@ export function Lyrics() {
           </p>
         )}
       </div>
-    </div>
+    </>
   )
 }

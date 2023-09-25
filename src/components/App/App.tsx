@@ -11,11 +11,11 @@ export function App() {
 
   return (
     <PickedColorProvider>
-      <div className='grid h-screen grid-cols-2-left flex-row gap-4 bg-slate-50 pl-2 pt-2 print:bg-transparent md:grid-cols-3-central'>
+      <div className='main-layout'>
         <div className='col-span-2 h-min print:hidden md:col-span-1'>
           <Title />
         </div>
-        <div className='flex flex-col items-center gap-4 overflow-hidden'>
+        <div className='flex flex-col items-center gap-4'>
           <SongMetadata />
           <Lyrics />
         </div>
