@@ -1,4 +1,6 @@
+import { DocumentPlusIcon } from '@heroicons/react/24/solid'
 import { PickedColorProvider } from '../../state/PickedColorContext'
+import { IconButton } from '../IconButton'
 import { Lyrics } from '../Lyrics'
 import { SongMetadata } from '../Metadata'
 import { Palette } from '../Palette'
@@ -20,7 +22,11 @@ export function App() {
           <Lyrics />
         </div>
         <div className='flex flex-col justify-between'>
-          <QuickActionsContainer />
+          <QuickActionsContainer>
+            <IconButton as='a' href='/'>
+              <DocumentPlusIcon />
+            </IconButton>
+          </QuickActionsContainer>
           <Palette />
           <div />
         </div>
