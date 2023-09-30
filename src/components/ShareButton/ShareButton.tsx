@@ -1,7 +1,7 @@
 import {
+  ShareIcon,
   ClipboardDocumentCheckIcon,
-  ClipboardDocumentIcon,
-  ShareIcon
+  ClipboardDocumentIcon
 } from '@heroicons/react/24/outline'
 import { useClipboard } from 'use-clipboard-copy'
 import { canNavigatorShare, shareUrl } from '../../utils/share'
@@ -15,7 +15,6 @@ function ClipboardIcon({ copied }: { copied: boolean }) {
 }
 
 export function ShareButton() {
-  // TODO: Generate shareable link on share (with useMemo)
   const url = window.location.href
   const canShare = canNavigatorShare(url)
   const { copy, copied } = useClipboard({ copiedTimeout: 1000 })

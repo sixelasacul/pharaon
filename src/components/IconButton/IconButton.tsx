@@ -1,20 +1,13 @@
-interface IconButtonProps<E extends React.ElementType> {
-  as?: E
-}
-type PolymorphedIconButtonProps<E extends React.ElementType> =
-  IconButtonProps<E> & Omit<React.ComponentProps<E>, keyof IconButtonProps<E>>
-
-const defaultElement = 'button'
-const COMMON_CLASSNAMES =
-  'h-5 w-5 p-2 box-content rounded-full shadow enabled:hover:bg-black/10 print:hidden bg-white disabled:opacity-75'
-
-export function IconButton<
-  E extends React.ElementType = typeof defaultElement
->({ as, children, ...props }: PolymorphedIconButtonProps<E>) {
-  const Component = as ?? defaultElement
+export function IconButton({
+  children,
+  ...props
+}: React.PropsWithChildren<React.ButtonHTMLAttributes<HTMLButtonElement>>) {
   return (
-    <Component {...props} className={COMMON_CLASSNAMES}>
+    <button
+      {...props}
+      className='box-content h-5 w-5 rounded-full bg-white p-2 shadow enabled:hover:bg-black/10 disabled:opacity-75 print:hidden'
+    >
       {children}
-    </Component>
+    </button>
   )
 }
