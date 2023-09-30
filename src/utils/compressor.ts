@@ -1,5 +1,7 @@
 import { fromUint8Array, toUint8Array } from 'js-base64'
 import { deflate, inflate } from 'pako'
+import { shortenNameColor } from '../components/Palette'
+import { type SharedState } from '../state/shareableStore'
 
 // Based on https://github.com/mermaid-js/mermaid-live-editor/blob/7c64a6549779435986739d48d5dbf3710725c281/src/lib/util/serde.ts#L1
 
@@ -13,4 +15,25 @@ export function compressAndEncode(original: string): string {
 export function decodeAndDecompress(encoded: string): string {
   const decoded = toUint8Array(encoded)
   return inflate(decoded, { to: 'string' })
+}
+
+function shortenSyllablesColor(syllablesColor: SharedState['syllablesColor']) {
+  // Instead of colors, we save a short code from the palette
+  const shortened: Array<[number, string]> = []
+  for (const [index, color] of syllablesColor) {
+    shortened.push([index, shortenNameColor(color)])
+  }
+  return shortened
+}
+
+export function compressState({
+  syllablesColor,
+  ...state
+}: SharedState): string {
+  return compressAndEncode(
+    JSON.stringify({
+      ...state,
+      syllablesColor: shortenSyllablesColor(syllablesColor)
+    })
+  )
 }

@@ -2,11 +2,13 @@ import { z } from 'zod'
 import { paletteMap } from '../../components/Palette'
 import { type Color } from '../PickedColorContext'
 
-const baseSchema = z.object({
+export const baseSchema = z.object({
+  id: z.string(),
   lyrics: z.string(),
   artists: z.string(),
   name: z.string()
 })
+export type BaseState = z.infer<typeof baseSchema>
 
 export const stateSchema = baseSchema.extend({
   syllablesColor: z.map(
