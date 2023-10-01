@@ -4,7 +4,12 @@ import {
   ShareIcon
 } from '@heroicons/react/24/outline'
 import { useClipboard } from 'use-clipboard-copy'
-import { canNavigatorShare, shareUrl } from '../../utils/share'
+import { useShareableStoreState } from '../../state/shareableStore'
+import {
+  canNavigatorShare,
+  generateShareableUrl,
+  shareUrl
+} from '../../utils/share'
 import { IconButton } from '../IconButton'
 
 function ClipboardIcon({ copied }: { copied: boolean }) {
@@ -15,16 +20,16 @@ function ClipboardIcon({ copied }: { copied: boolean }) {
 }
 
 export function ShareButton() {
-  // TODO: Generate shareable link on share (with useMemo)
-  const url = window.location.href
-  const canShare = canNavigatorShare(url)
   const { copy, copied } = useClipboard({ copiedTimeout: 1000 })
+  const state = useShareableStoreState()
+  const shareableUrl = generateShareableUrl(state)
+  const canShare = canNavigatorShare(shareableUrl)
 
   async function share() {
     if (canShare) {
-      await shareUrl(url)
+      await shareUrl(shareableUrl)
     } else {
-      copy(url)
+      copy(shareableUrl)
     }
   }
 

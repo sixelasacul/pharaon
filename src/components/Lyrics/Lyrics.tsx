@@ -80,7 +80,7 @@ export function Lyrics() {
         </IconButton>
         <ShareButton />
       </QuickAction>
-      <div className='h-full w-full max-w-lg overflow-y-scroll border-red-200'>
+      <div className='h-full w-full max-w-lg overflow-y-auto border-red-200'>
         {isEditing ? (
           <textarea
             className='-mb-1 h-full w-full resize-none bg-transparent font-medium tracking-wide semi-expanded placeholder:oblique'

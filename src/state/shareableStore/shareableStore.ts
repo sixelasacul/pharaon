@@ -49,8 +49,11 @@ const useStore = create<Store>((set) => ({
 }))
 
 export const useShareableStore = useStore
+export function useShareableStoreState() {
+  return useStore(({ updateState, updateSyllablesColor, ...state }) => state)
+}
 export function useShareableStoreAction() {
-  // It doesn't like when functions are destructured from the state
+  // It doesn't like when functions are destructured from the state (apparently)
   const updateState = useStore((state) => state.updateState)
   const updateSyllablesColor = useStore((state) => state.updateSyllablesColor)
   return {
