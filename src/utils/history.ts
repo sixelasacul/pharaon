@@ -5,6 +5,8 @@ import { z } from 'zod'
 import { stateSchema } from '../state/shareableStore'
 import { logError } from './log'
 
+// stateSchema.transform
+
 const historyEntryMapSchema = z.array(z.string())
 const historyEntrySchema = stateSchema
 
@@ -28,23 +30,19 @@ function getHistoryMap(): HistoryMap {
   }
 }
 
-export function getHistory(): HistoryEntry[] {
-  return getHistoryMap()
-    .map((entryId) => {
-      const entryFromStorage = localStorage.getItem(entryId)
+export function getHistoryEntry(id: string) {
+  const entryFromStorage = localStorage.getItem(id)
 
-      try {
-        return historyEntrySchema.parse(JSON.parse(entryFromStorage ?? '{}'))
-      } catch (error) {
-        logError(
-          'Invalid history entry in Local Storage',
-          entryFromStorage,
-          error
-        )
-        return null
-      }
-    })
-    .filter(Boolean)
+  try {
+    return historyEntrySchema.parse(JSON.parse(entryFromStorage ?? '{}'))
+  } catch (error) {
+    logError('Invalid history entry in Local Storage', entryFromStorage, error)
+    return null
+  }
+}
+
+export function getHistory(): HistoryEntry[] {
+  return getHistoryMap().map(getHistoryEntry).filter(Boolean)
 }
 
 export function updateHistory(entry: HistoryEntry) {
@@ -63,6 +61,10 @@ export function updateHistory(entry: HistoryEntry) {
     localStorage.setItem(ENTRY_MAP, JSON.stringify(historyMap))
   }
   localStorage.setItem(entry.id, JSON.stringify(entry))
+}
+
+export function hasEntry(id: string) {
+  return localStorage.getItem(id) !== null
 }
 
 // May be needed if a user wants to clear their history
