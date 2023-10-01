@@ -2,16 +2,18 @@
 // May want to use IndexedDB if quota limit is reached
 
 import { z } from 'zod'
-import { stateSchema } from '../state/shareableStore'
+import {
+  type SharedState,
+  serializedStateSchema
+} from '../state/shareableStore'
+import { serializeState } from './compressor'
 import { logError } from './log'
 
 // stateSchema.transform
 
 const historyEntryMapSchema = z.array(z.string())
-const historyEntrySchema = stateSchema
 
 type HistoryMap = z.infer<typeof historyEntryMapSchema>
-type HistoryEntry = z.infer<typeof historyEntrySchema>
 
 const ENTRY_MAP = 'history'
 const HISTORY_MAX_SIZE = 5
@@ -34,18 +36,18 @@ export function getHistoryEntry(id: string) {
   const entryFromStorage = localStorage.getItem(id)
 
   try {
-    return historyEntrySchema.parse(JSON.parse(entryFromStorage ?? '{}'))
+    return serializedStateSchema.parse(JSON.parse(entryFromStorage ?? '{}'))
   } catch (error) {
     logError('Invalid history entry in Local Storage', entryFromStorage, error)
     return null
   }
 }
 
-export function getHistory(): HistoryEntry[] {
+export function getHistory() {
   return getHistoryMap().map(getHistoryEntry).filter(Boolean)
 }
 
-export function updateHistory(entry: HistoryEntry) {
+export function updateHistory(entry: SharedState) {
   const historyMap = getHistoryMap()
 
   // Check the presence to add it or just update it
@@ -60,7 +62,7 @@ export function updateHistory(entry: HistoryEntry) {
     historyMap.unshift(entry.id)
     localStorage.setItem(ENTRY_MAP, JSON.stringify(historyMap))
   }
-  localStorage.setItem(entry.id, JSON.stringify(entry))
+  localStorage.setItem(entry.id, serializeState(entry))
 }
 
 export function hasEntry(id: string) {
@@ -68,7 +70,7 @@ export function hasEntry(id: string) {
 }
 
 // May be needed if a user wants to clear their history
-export function removeFromHistory(entry: HistoryEntry) {
+export function removeFromHistory(entry: SharedState) {
   const historyMap = getHistoryMap()
 
   const newHistoryMap = historyMap.filter((id) => id !== entry.id)

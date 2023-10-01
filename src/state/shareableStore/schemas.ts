@@ -23,7 +23,7 @@ export const stateSchema = baseSchema.extend({
 })
 export type SharedState = z.infer<typeof stateSchema>
 
-export const urlStateSchema = baseSchema.extend({
+export const serializedStateSchema = baseSchema.extend({
   syllablesColor: z
     .array(z.tuple([z.number(), z.string()]))
     .transform((val) => {

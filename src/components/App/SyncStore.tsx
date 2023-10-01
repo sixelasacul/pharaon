@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { validate } from 'uuid'
 import {
-  urlStateSchema,
+  serializedStateSchema,
   useShareableStoreAction,
   useShareableStoreState
 } from '../../state/shareableStore'
@@ -15,31 +15,41 @@ export function SyncStore() {
   const state = useShareableStoreState()
   const { updateState } = useShareableStoreAction()
 
-  // Read URL to initialize store
+  // Read URL to initialize state, and setup a listener to update the state when
+  // hash changes. At some point, I should be using `react-router-dom`.
   React.useEffect(() => {
-    // hash contains leading #
-    const hash = window.location.hash.substring(1)
-    // Determine whether it's an id, stored locally or externally (later), or a hash to be parsed
-    if (hash !== '') {
-      if (validate(hash)) {
-        if (hasEntry(hash)) {
-          const entry = getHistoryEntry(hash)
-          if (entry !== null) {
-            updateState(entry)
+    function parseAndUpdateState() {
+      // hash contains leading #
+      const hash = window.location.hash.substring(1)
+      // Determine whether it's an id, stored locally or externally (later), or a hash to be parsed
+      if (hash !== '') {
+        if (validate(hash)) {
+          if (hasEntry(hash)) {
+            const entry = getHistoryEntry(hash)
+            if (entry !== null) {
+              updateState(entry)
+            }
+          } else {
+            // API call
           }
         } else {
-          // API call
-        }
-      } else {
-        // Probably a compressed state
-        try {
-          const parsedFromUrl = JSON.parse(decodeAndDecompress(hash))
-          const parsedWithSchema = urlStateSchema.parse(parsedFromUrl)
-          updateState(parsedWithSchema)
-        } catch (e) {
-          logError('Invalid state in URL', hash, e)
+          // Probably a compressed state
+          try {
+            const parsedFromUrl = JSON.parse(decodeAndDecompress(hash))
+            const parsedWithSchema = serializedStateSchema.parse(parsedFromUrl)
+            updateState(parsedWithSchema)
+          } catch (e) {
+            logError('Invalid state in URL', hash, e)
+          }
         }
       }
+    }
+
+    parseAndUpdateState()
+
+    window.addEventListener('hashchange', parseAndUpdateState)
+    return () => {
+      window.removeEventListener('hashchange', parseAndUpdateState)
     }
   }, [updateState])
 

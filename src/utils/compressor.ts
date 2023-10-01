@@ -26,14 +26,13 @@ function shortenSyllablesColor(syllablesColor: SharedState['syllablesColor']) {
   return shortened
 }
 
-export function compressState({
-  syllablesColor,
-  ...state
-}: SharedState): string {
-  return compressAndEncode(
-    JSON.stringify({
-      ...state,
-      syllablesColor: shortenSyllablesColor(syllablesColor)
-    })
-  )
+export function serializeState({ syllablesColor, ...state }: SharedState) {
+  return JSON.stringify({
+    ...state,
+    syllablesColor: shortenSyllablesColor(syllablesColor)
+  })
+}
+
+export function compressState(state: SharedState): string {
+  return compressAndEncode(serializeState(state))
 }
