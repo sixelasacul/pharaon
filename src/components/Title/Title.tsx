@@ -28,7 +28,7 @@ export function Title() {
   }
 
   return (
-    <h1 className='py-2 font-headline text-5xl'>
+    <h1 className='font-headline py-2 text-5xl'>
       <Syllable
         className='pl-2'
         size='large'

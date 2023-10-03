@@ -5,8 +5,8 @@ import { type Color } from '../PickedColorContext'
 export const baseSchema = z.object({
   id: z.string(),
   lyrics: z.string(),
-  artists: z.string(),
-  name: z.string()
+  artists: z.string().transform((val) => (val === '' ? 'Inconnu' : val)),
+  name: z.string().transform((val) => (val === '' ? 'Inconnu' : val))
 })
 export type BaseState = z.infer<typeof baseSchema>
 

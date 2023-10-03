@@ -7,7 +7,7 @@ export function QuickActionsContainer({ children }: React.PropsWithChildren) {
   return (
     <div
       id={QUICK_ACTIONS_ID}
-      className='flex flex-col items-end gap-2 p-2 md:p-4'
+      className='absolute right-0 top-0 flex flex-col items-end gap-2 p-2 md:p-4'
     >
       {children}
     </div>

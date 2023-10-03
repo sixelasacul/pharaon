@@ -13,7 +13,7 @@ import { logError } from '../../utils/log'
 
 export function SyncStore() {
   const state = useShareableStoreState()
-  const { updateState } = useShareableStoreAction()
+  const { resetState, updateState } = useShareableStoreAction()
 
   // Read URL to initialize state, and setup a listener to update the state when
   // hash changes. At some point, I should be using `react-router-dom`.
@@ -21,6 +21,7 @@ export function SyncStore() {
     function parseAndUpdateState() {
       // hash contains leading #
       const hash = window.location.hash.substring(1)
+      console.log('hashchange', hash)
       // Determine whether it's an id, stored locally or externally (later), or a hash to be parsed
       if (hash !== '') {
         if (validate(hash)) {
@@ -42,6 +43,8 @@ export function SyncStore() {
             logError('Invalid state in URL', hash, e)
           }
         }
+      } else {
+        resetState()
       }
     }
 
@@ -51,7 +54,7 @@ export function SyncStore() {
     return () => {
       window.removeEventListener('hashchange', parseAndUpdateState)
     }
-  }, [updateState])
+  }, [resetState, updateState])
 
   // Updates the URL and the history based on the generated id
   React.useEffect(() => {

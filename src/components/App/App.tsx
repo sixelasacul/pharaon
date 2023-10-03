@@ -24,9 +24,9 @@ export function App() {
             {/* Temporary; on mobile, it will appear in a sidebar, and on desktop, just on the right */}
             <History />
           </div>
-          <div className='flex flex-col justify-between'>
+          <div className='flex flex-col justify-center'>
             <QuickActionsContainer>
-              <IconButton as='a' href='/'>
+              <IconButton as='a' href='#'>
                 <DocumentPlusIcon />
               </IconButton>
             </QuickActionsContainer>

@@ -6,6 +6,7 @@ import { type SharedState } from './schemas'
 // TODO: Rename store if we no longer need `shareable`
 
 interface Store extends SharedState {
+  resetState: () => void
   updateState: (next: Partial<SharedState>) => void
   updateSyllablesColor: (index: number, color: Color | null) => void
 }
@@ -23,6 +24,9 @@ export const defaultStore: SharedState = {
 // (we only use the actions in most components, except when sharing the link)
 const useStore = create<Store>((set) => ({
   ...defaultStore,
+  resetState() {
+    set(defaultStore)
+  },
   updateState(next) {
     set((state) => {
       if (state.id === defaultStore.id) {
@@ -50,14 +54,14 @@ const useStore = create<Store>((set) => ({
 
 export const useShareableStore = useStore
 export function useShareableStoreState() {
-  return useStore(({ updateState, updateSyllablesColor, ...state }) => state)
+  return useStore(
+    ({ resetState, updateState, updateSyllablesColor, ...state }) => state
+  )
 }
 export function useShareableStoreAction() {
-  // It doesn't like when functions are destructured from the state (apparently)
-  const updateState = useStore((state) => state.updateState)
-  const updateSyllablesColor = useStore((state) => state.updateSyllablesColor)
-  return {
+  return useStore(({ resetState, updateState, updateSyllablesColor }) => ({
+    resetState,
     updateState,
     updateSyllablesColor
-  }
+  }))
 }

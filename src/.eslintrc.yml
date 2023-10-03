@@ -23,15 +23,33 @@ settings:
   react:
     version: "detect"
   import/resolver:
-    typescript: true
+    typescript:
+      project: "./tsconfig.json"
 rules: 
   prettier/prettier: error
   no-extra-boolean-cast: off
   "@typescript-eslint/explicit-function-return-type": off
   "@typescript-eslint/triple-slash-reference": off
-  "react/react-in-jsx-scope": off
+  react/react-in-jsx-scope: off
+  react/prop-types: off
   import/order:
     - error
     -
+      # groups:
+      #   - builtin
+      #   - external
+      #   - internal
+      #   - parent
+      #   - sibling
+      #   - index
+      # pathGroups:
+      #   -
+      #     pattern: "@/**/*"
+      #     group: internal
+      #     position: before
+      #   -
+      #     pattern: "@**/*"
+      #     group: external
+      #     position: after
       alphabetize:
         order: asc
