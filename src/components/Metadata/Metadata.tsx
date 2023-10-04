@@ -9,8 +9,8 @@ interface DynamicTextInputProps {
   name: string
   externalValue: string
   className?: string
-  format?: (value: string) => string
-  onEditDone?: (value: string) => void
+  format?(value: string): string
+  onEditDone?(value: string): void
 }
 export function DynamicTextInput({
   name,

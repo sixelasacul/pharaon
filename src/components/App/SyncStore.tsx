@@ -21,7 +21,6 @@ export function SyncStore() {
     function parseAndUpdateState() {
       // hash contains leading #
       const hash = window.location.hash.substring(1)
-      console.log('hashchange', hash)
       // Determine whether it's an id, stored locally or externally (later), or a hash to be parsed
       if (hash !== '') {
         if (validate(hash)) {

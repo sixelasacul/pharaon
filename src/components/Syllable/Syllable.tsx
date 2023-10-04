@@ -5,7 +5,7 @@ interface SyllableProps {
   color: Color
   className?: string
   size?: 'normal' | 'large'
-  onClick: () => void
+  onClick(): void
 }
 
 export function Syllable({

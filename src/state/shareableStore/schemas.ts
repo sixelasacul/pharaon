@@ -4,6 +4,8 @@ import { type Color } from '../PickedColorContext'
 
 export const baseSchema = z.object({
   id: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
   lyrics: z.string(),
   artists: z.string().transform((val) => (val === '' ? 'Inconnu' : val)),
   name: z.string().transform((val) => (val === '' ? 'Inconnu' : val))

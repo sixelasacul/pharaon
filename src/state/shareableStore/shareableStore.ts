@@ -6,9 +6,9 @@ import { type SharedState } from './schemas'
 // TODO: Rename store if we no longer need `shareable`
 
 interface Store extends SharedState {
-  resetState: () => void
-  updateState: (next: Partial<SharedState>) => void
-  updateSyllablesColor: (index: number, color: Color | null) => void
+  resetState(): void
+  updateState(next: Partial<SharedState>): void
+  updateSyllablesColor(index: number, color: Color | null): void
 }
 
 export const defaultStore: SharedState = {
@@ -16,6 +16,8 @@ export const defaultStore: SharedState = {
   name: '',
   artists: '',
   lyrics: '',
+  createdAt: new Date(),
+  updatedAt: new Date(),
   syllablesColor: new Map()
 }
 
@@ -35,7 +37,10 @@ const useStore = create<Store>((set) => ({
           ...next
         }
       }
-      return next
+      return {
+        ...next,
+        updatedAt: new Date()
+      }
     })
   },
   updateSyllablesColor(index, color) {
