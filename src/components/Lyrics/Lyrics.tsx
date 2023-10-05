@@ -1,4 +1,4 @@
-import { PencilIcon, XMarkIcon, PrinterIcon } from '@heroicons/react/24/outline'
+import { PencilIcon, PrinterIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import * as React from 'react'
 import { usePickedColor } from '../../state/PickedColorContext'
@@ -8,11 +8,12 @@ import {
 } from '../../state/shareableStore'
 import { identifyArrayItems } from '../../utils/identifyArrayItems'
 import { extractSyllablesFromSentence } from '../../utils/parser'
-import { IconButton } from '../IconButton'
 import { noColor } from '../Palette'
 import { QuickAction } from '../QuickActions'
 import { ShareButton } from '../ShareButton'
 import { Syllable as InternalSyllable } from '../Syllable'
+import { Button } from '../ui/button'
+import { Toggle } from '../ui/toggle'
 
 const DEFAULT_TEXT =
   'Ajouter un texte en cliquant sur le crayon en haut à droite'
@@ -60,24 +61,27 @@ export function Lyrics() {
     setIsEditing(false)
     setEditedLyrics(lyrics)
   }
-  function toggleEdit() {
-    if (isEditing) {
-      doneEditing()
-    } else {
-      startEditing()
-    }
-  }
 
   return (
     <>
       <QuickAction>
-        <IconButton onClick={toggleEdit}>
-          {isEditing ? <XMarkIcon /> : <PencilIcon />}
-        </IconButton>
-        <IconButton onClick={window.print} disabled={isEditing}>
+        <Toggle
+          variant='outline'
+          onPressedChange={(pressed) => {
+            pressed ? startEditing() : doneEditing()
+          }}
+        >
+          <PencilIcon />
+        </Toggle>
+        <Button
+          icon
+          variant='outline'
+          onClick={window.print}
+          disabled={isEditing}
+        >
           <PrinterIcon />
           {/* Tooltip to suggest to print backgrounds + remove header and footer */}
-        </IconButton>
+        </Button>
         <ShareButton />
       </QuickAction>
       <div className='h-full w-full max-w-lg overflow-y-auto border-red-200'>

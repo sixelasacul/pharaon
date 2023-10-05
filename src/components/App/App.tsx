@@ -1,12 +1,12 @@
 import { DocumentPlusIcon } from '@heroicons/react/24/outline'
 import { PickedColorProvider } from '../../state/PickedColorContext'
-import { IconButton } from '../IconButton'
 import { Lyrics } from '../Lyrics'
 import { Menu } from '../Menu'
 import { SongMetadata } from '../Metadata'
 import { Palette } from '../Palette'
 import { QuickActionsContainer } from '../QuickActions'
 import { Title } from '../Title'
+import { Button } from '../ui/button'
 import { SyncStore } from './SyncStore'
 
 export function App() {
@@ -15,7 +15,7 @@ export function App() {
       <SyncStore />
       <PickedColorProvider>
         <div className='main-layout'>
-          <div className='col-span-2 h-min print:hidden md:col-span-1'>
+          <div className='col-span-2 print:hidden md:col-span-1'>
             <div className='flex flex-row items-center gap-2 md:flex-col-reverse md:items-start md:gap-4'>
               <Menu />
               <Title />
@@ -27,9 +27,11 @@ export function App() {
           </div>
           <div className='flex flex-col items-end justify-center'>
             <QuickActionsContainer>
-              <IconButton as='a' href='#'>
-                <DocumentPlusIcon />
-              </IconButton>
+              <Button asChild icon variant='outline'>
+                <a href='#'>
+                  <DocumentPlusIcon />
+                </a>
+              </Button>
             </QuickActionsContainer>
             <Palette />
             <div />

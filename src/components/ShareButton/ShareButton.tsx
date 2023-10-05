@@ -10,7 +10,7 @@ import {
   generateShareableUrl,
   shareUrl
 } from '../../utils/share'
-import { IconButton } from '../IconButton'
+import { Button } from '../ui/button'
 
 function ClipboardIcon({ copied }: { copied: boolean }) {
   if (copied) {
@@ -34,12 +34,14 @@ export function ShareButton() {
   }
 
   return (
-    <IconButton
+    <Button
+      icon
+      variant='outline'
       onClick={() => {
         void share()
       }}
     >
       {canShare ? <ShareIcon /> : <ClipboardIcon copied={copied} />}
-    </IconButton>
+    </Button>
   )
 }

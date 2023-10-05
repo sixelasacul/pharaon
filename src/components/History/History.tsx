@@ -12,6 +12,10 @@ const formatter = new Intl.DateTimeFormat('fr-FR', {
   timeStyle: 'short'
 })
 
+function defaultString(str: string) {
+  return str === '' ? 'Inconnu' : str
+}
+
 export function History() {
   const history = getHistory()
   return (
@@ -21,8 +25,10 @@ export function History() {
           <a href={`#${entry.id}`}>
             <Card className='hover:bg-slate-50' elevated={false}>
               <CardHeader>
-                <CardTitle>{entry.name}</CardTitle>
-                <CardDescription>{entry.artists}</CardDescription>
+                <CardTitle>{defaultString(entry.name)}</CardTitle>
+                <CardDescription>
+                  {defaultString(entry.artists)}
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <p>

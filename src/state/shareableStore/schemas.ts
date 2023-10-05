@@ -7,8 +7,8 @@ export const baseSchema = z.object({
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
   lyrics: z.string(),
-  artists: z.string().transform((val) => (val === '' ? 'Inconnu' : val)),
-  name: z.string().transform((val) => (val === '' ? 'Inconnu' : val))
+  artists: z.string(),
+  name: z.string()
 })
 export type BaseState = z.infer<typeof baseSchema>
 

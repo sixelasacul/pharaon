@@ -1,8 +1,8 @@
 import { Bars3Icon } from '@heroicons/react/24/outline'
 import { useMedia } from 'react-use'
 import { History } from '@/components/History'
-import { IconButton } from '@/components/IconButton'
 import { Title } from '@/components/Title'
+import { Button } from '@/components/ui/button'
 import {
   Sheet,
   SheetContent,
@@ -13,11 +13,13 @@ import {
 
 function PreparedHistory() {
   return (
-    <div className='flex flex-col gap-2 p-0 py-4 md:gap-4 md:p-8'>
+    <div className='flex h-full flex-col gap-2 py-4 md:gap-4 md:p-8'>
       <h3 className='text-center text-lg md:text-xl'>
         Historique des découpages
       </h3>
-      <History />
+      <div className='overflow-y-auto'>
+        <History />
+      </div>
     </div>
   )
 }
@@ -32,9 +34,9 @@ export function Menu() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <IconButton size='lg' contained={false}>
+        <Button icon size='lg' variant='ghost'>
           <Bars3Icon />
-        </IconButton>
+        </Button>
       </SheetTrigger>
       <SheetContent side='left'>
         <SheetHeader>

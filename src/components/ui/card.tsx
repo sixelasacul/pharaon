@@ -9,7 +9,7 @@ const cardVariants = cva('rounded-lg border bg-card text-card-foreground', {
     }
   },
   defaultVariants: {
-    elevated: true
+    elevated: false
   }
 })
 
