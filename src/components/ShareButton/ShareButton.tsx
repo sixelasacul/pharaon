@@ -1,11 +1,16 @@
 import {
-  ShareIcon,
   ClipboardDocumentCheckIcon,
-  ClipboardDocumentIcon
+  ClipboardDocumentIcon,
+  ShareIcon
 } from '@heroicons/react/24/outline'
 import { useClipboard } from 'use-clipboard-copy'
-import { canNavigatorShare, shareUrl } from '../../utils/share'
-import { IconButton } from '../IconButton'
+import { useShareableStoreState } from '../../state/shareableStore'
+import {
+  canNavigatorShare,
+  generateShareableUrl,
+  shareUrl
+} from '../../utils/share'
+import { Button } from '../ui/button'
 
 function ClipboardIcon({ copied }: { copied: boolean }) {
   if (copied) {
@@ -15,25 +20,28 @@ function ClipboardIcon({ copied }: { copied: boolean }) {
 }
 
 export function ShareButton() {
-  const url = window.location.href
-  const canShare = canNavigatorShare(url)
   const { copy, copied } = useClipboard({ copiedTimeout: 1000 })
+  const state = useShareableStoreState()
+  const shareableUrl = generateShareableUrl(state)
+  const canShare = canNavigatorShare(shareableUrl)
 
   async function share() {
     if (canShare) {
-      await shareUrl(url)
+      await shareUrl(shareableUrl)
     } else {
-      copy(url)
+      copy(shareableUrl)
     }
   }
 
   return (
-    <IconButton
+    <Button
+      icon
+      variant='outline'
       onClick={() => {
         void share()
       }}
     >
       {canShare ? <ShareIcon /> : <ClipboardIcon copied={copied} />}
-    </IconButton>
+    </Button>
   )
 }

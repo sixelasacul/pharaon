@@ -1,12 +1,13 @@
 import { clsx } from 'clsx'
 import { usePickedColor } from '../../state/PickedColorContext'
+import { Card } from '../ui/card'
 import { palette } from './constants'
 
 export function Palette() {
   const [pickedColor, setPickedColor] = usePickedColor()
   // Round palette, like actual paint palette?
   return (
-    <div className='grid grid-cols-1 place-items-center gap-2 rounded-l bg-white p-2 shadow-md print:hidden md:grid-cols-2'>
+    <Card className='grid grid-cols-1 place-items-center gap-2 p-2 print:hidden md:grid-cols-2'>
       {palette.map((color) => (
         <button
           key={color.base}
@@ -24,6 +25,6 @@ export function Palette() {
           }}
         ></button>
       ))}
-    </div>
+    </Card>
   )
 }
