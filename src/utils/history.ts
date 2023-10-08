@@ -53,7 +53,7 @@ export function updateHistory(entry: SharedState) {
   // Check the presence to add it or just update it
   if (historyMap.find((id) => id === entry.id) === undefined) {
     // We want a small history so we remove old ones
-    if (historyMap.length > HISTORY_MAX_SIZE) {
+    if (historyMap.length >= HISTORY_MAX_SIZE) {
       const lastId = historyMap.pop()
       if (lastId !== undefined) {
         localStorage.removeItem(lastId)
