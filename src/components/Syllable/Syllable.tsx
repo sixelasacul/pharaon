@@ -23,8 +23,6 @@ export interface SyllableProps extends Omit<SyllableVariants, 'tempo'> {
   onClick(): void
 }
 
-// Word component to solve issues with inline-flex?
-
 export function Syllable({
   className,
   children,
