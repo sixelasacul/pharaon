@@ -16,7 +16,7 @@ export function App() {
       <PickedColorProvider>
         <div className='main-layout'>
           <div className='col-span-2 print:hidden md:col-span-1'>
-            <div className='flex flex-row items-center gap-2 md:flex-col-reverse md:items-start md:gap-4'>
+            <div className='flex h-full flex-row items-center gap-2 md:flex-col-reverse md:items-start md:gap-4'>
               <Menu />
               <Title />
             </div>

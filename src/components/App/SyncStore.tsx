@@ -57,10 +57,14 @@ export function SyncStore() {
 
   // Updates the URL and the history based on the generated id
   React.useEffect(() => {
+    console.log({ state })
     const hash = window.location.hash.substring(1)
     const { id } = state
     if (id !== '') {
       // react-query + debounce
+      // Note: we should not call updateHistory the first time the state is
+      // displayed on the page; Thus we need to know when the above useEffect
+      // calls `updateState`, keep that in memory to skip `updateHistory`
       updateHistory(state)
       if (id !== hash) {
         window.history.pushState(null, '', `#${id}`)
