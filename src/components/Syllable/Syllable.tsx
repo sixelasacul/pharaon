@@ -2,18 +2,21 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { type Color } from '../../state/PickedColorContext'
 import { cn } from '@/utils/cn'
 
-const syllableVariants = cva('select-all transition-colors', {
-  variants: {
-    size: {
-      normal: 'duration-75',
-      large: 'duration-150'
+const syllableVariants = cva(
+  'relative select-all py-px transition-colors md:py-1',
+  {
+    variants: {
+      size: {
+        normal: 'duration-75',
+        large: 'duration-150'
+      }
     }
   }
-})
+)
 
 type SyllableVariants = VariantProps<typeof syllableVariants>
 
-interface SyllableProps extends Omit<SyllableVariants, 'tempo'> {
+export interface SyllableProps extends Omit<SyllableVariants, 'tempo'> {
   color: Color
   className?: string
   tempo?: number
@@ -33,19 +36,21 @@ export function Syllable({
   const hasTempo = tempo !== undefined
   // TODO: Fix overlapping padding
   return (
-    <span className='inline-flex flex-col items-center justify-start'>
-      <span
-        className={cn(
-          color.base,
-          color.hover,
-          syllableVariants({ size, className })
-        )}
-        role='button'
-        onClick={onClick}
-      >
-        {children}
-      </span>
-      {hasTempo && <span>{tempo}</span>}
+    <span
+      className={cn(
+        color.base,
+        color.hover,
+        syllableVariants({ size, className })
+      )}
+      role='button'
+      onClick={onClick}
+    >
+      {children}
+      {hasTempo && (
+        <span className='absolute -bottom-2 right-0 select-none text-xs text-slate-500'>
+          {tempo}
+        </span>
+      )}
     </span>
   )
 }

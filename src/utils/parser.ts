@@ -14,6 +14,7 @@ const graphicVowels = [
   'ë',
   'ï',
   'î',
+  'ô',
   'ù',
   'û'
 ]
@@ -40,7 +41,9 @@ const phoneticVowels = [
   'ue',
   'uoi',
   'oie',
-  'ué'
+  'ué',
+  'yea',
+  'aoû'
 ]
 // https://fr.wikipedia.org/wiki/Consonne_sourde
 // n itself isn't a voiceless consonant, but as it is combined with a vowel,
@@ -88,7 +91,7 @@ const VOICELESS_CONSONANT_GROUP_REGEX = new RegExp(
     .join('')}])`,
   'i'
 )
-const WORD_SEPARATOR_REGEX = new RegExp(`[${wordSeparators.join('')}]+`)
+export const WORD_SEPARATOR_REGEX = new RegExp(`[${wordSeparators.join('')}]+`)
 const WORD_SEPARATOR_SPLIT_REGEX = new RegExp(
   `([${wordSeparators.join('')}]+)|([^${wordSeparators.join('')}]+)`,
   'g'
