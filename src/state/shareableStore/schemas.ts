@@ -26,6 +26,11 @@ export const stateSchema = baseSchema.extend({
 export type SharedState = z.infer<typeof stateSchema>
 
 export const serializedStateSchema = baseSchema.extend({
+  // transition
+  id: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  // end transition
   syllablesColor: z
     .array(z.tuple([z.number(), z.string()]))
     .transform((val) => {

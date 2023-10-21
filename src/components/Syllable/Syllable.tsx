@@ -15,6 +15,7 @@ export function Syllable({
   size = 'normal',
   onClick
 }: React.PropsWithChildren<SyllableProps>) {
+  // TODO: Fix overlapping padding
   return (
     <span
       className={clsx(

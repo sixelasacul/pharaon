@@ -36,9 +36,12 @@ export function SyncStore() {
           // Probably a compressed state
           try {
             const parsedFromUrl = JSON.parse(decodeAndDecompress(hash))
+            // TODO: Handle version changes (e.g. addition of id, dates)
+            // But there's still a decompressing error for some old links idk
             const parsedWithSchema = serializedStateSchema.parse(parsedFromUrl)
             updateState(parsedWithSchema)
           } catch (e) {
+            // TODO: Show toast feedback
             logError('Invalid state in URL', hash, e)
           }
         }
