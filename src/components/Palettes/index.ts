@@ -1,2 +1,2 @@
-export * from './Palette'
+export * from './Palettes'
 export * from './constants'

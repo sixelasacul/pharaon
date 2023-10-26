@@ -1,5 +1,5 @@
 import { cva, type VariantProps } from 'class-variance-authority'
-import { type Color } from '../../state/PickedColorContext'
+import { type Color } from '../../state/UserSelectionContext'
 import { cn } from '@/utils/cn'
 
 const syllableVariants = cva(
@@ -45,7 +45,7 @@ export function Syllable({
     >
       {children}
       {hasTempo && (
-        <span className='absolute -bottom-2 right-0 select-none text-xs text-slate-500'>
+        <span className='absolute -bottom-2 right-0 z-10 select-none text-xs text-slate-500'>
           {tempo}
         </span>
       )}

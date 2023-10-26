@@ -1,7 +1,7 @@
 import { PencilIcon, PrinterIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import * as React from 'react'
-import { usePickedColor } from '../../state/PickedColorContext'
+import { useUserSelection } from '../../state/UserSelectionContext'
 import {
   useShareableStoreAction,
   useShareableStore
@@ -11,7 +11,7 @@ import {
   WORD_SEPARATOR_REGEX,
   extractSyllablesFromSentence
 } from '../../utils/parser'
-import { noColor } from '../Palette'
+import { noColor } from '../Palettes'
 import { QuickAction } from '../QuickActions'
 import { ShareButton } from '../ShareButton'
 import {
@@ -25,7 +25,7 @@ const DEFAULT_TEXT =
   'Ajouter un texte en cliquant sur le crayon en haut à droite'
 
 interface SyllableProps
-  extends Omit<InternalSyllableProps, 'color' | 'onClick'> {
+  extends Omit<InternalSyllableProps, 'color' | 'tempo' | 'onClick'> {
   index: number
 }
 function Syllable({
@@ -34,16 +34,33 @@ function Syllable({
   ...props
 }: React.PropsWithChildren<SyllableProps>) {
   // Prefer null rather than undefined
-  const [pickedColor = null] = usePickedColor()
-  const { updateSyllablesColor } = useShareableStoreAction()
+  const [{ color: pickedColor = null, tempo: pickedTempo = null }] =
+    useUserSelection()
+  const { updateSyllablesColor, updateSyllablesTempo } =
+    useShareableStoreAction()
   const color = useShareableStore((state) => state.syllablesColor.get(index))
+  const tempo = useShareableStore((state) => state.syllablesTempo.get(index))
+
+  function updateSyllable() {
+    // Shouldn't have both a color and a tempo picked
+    // Could be simpler
+    if (pickedColor === null && pickedTempo === null) {
+      updateSyllablesColor(index, pickedColor)
+      updateSyllablesTempo(index, pickedTempo)
+    }
+    if (pickedColor !== null) {
+      updateSyllablesColor(index, pickedColor)
+    }
+    if (pickedTempo !== null) {
+      updateSyllablesTempo(index, pickedTempo)
+    }
+  }
 
   return (
     <InternalSyllable
       color={color ?? noColor}
-      onClick={() => {
-        updateSyllablesColor(index, pickedColor)
-      }}
+      tempo={tempo}
+      onClick={updateSyllable}
       {...props}
     >
       {children}
@@ -126,7 +143,7 @@ export function Lyrics() {
                     return content
                   } else {
                     return (
-                      <Syllable key={id} index={index} tempo={1}>
+                      <Syllable key={id} index={index}>
                         {content}
                       </Syllable>
                     )

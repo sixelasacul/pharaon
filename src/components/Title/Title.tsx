@@ -1,7 +1,7 @@
 import * as React from 'react'
-import { type Color, usePickedColor } from '../../state/PickedColorContext'
+import { type Color, useUserSelection } from '../../state/UserSelectionContext'
 import { getUniqueRandomIntListInclusive } from '../../utils/random'
-import { palette } from '../Palette'
+import { palette } from '../Palettes'
 import { Syllable } from '../Syllable'
 import { cn } from '@/utils/cn'
 
@@ -21,7 +21,7 @@ export function Title<E extends React.ElementType>({
   className,
   ...props
 }: PolymorphedTitleProps<E>) {
-  const [pickedColor = null] = usePickedColor()
+  const [{ color: pickedColor = null }] = useUserSelection()
   const [{ pha, ra, on }, setColors] = React.useState<State>(() => {
     const [first, second] = getUniqueRandomIntListInclusive(
       0,

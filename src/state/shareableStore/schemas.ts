@@ -1,6 +1,6 @@
 import { z } from 'zod'
-import { paletteMap } from '../../components/Palette'
-import { type Color } from '../PickedColorContext'
+import { paletteMap } from '../../components/Palettes'
+import { type Color } from '../UserSelectionContext'
 
 export const baseSchema = z.object({
   id: z.string(),
@@ -21,7 +21,8 @@ export const stateSchema = baseSchema.extend({
       hover: z.string(),
       name: z.string()
     })
-  )
+  ),
+  syllablesTempo: z.map(z.number(), z.number())
 })
 export type SharedState = z.infer<typeof stateSchema>
 
@@ -40,5 +41,12 @@ export const serializedStateSchema = baseSchema.extend({
         map.set(index, paletteMap[color])
         return map
       }, new Map<number, Color>())
+    }),
+  syllablesTempo: z
+    .array(z.tuple([z.number(), z.number()]))
+    .transform((val) => {
+      // Even though we're given a list of map entries, we can't use the Map ctor
+      // directly, as we need to parse the colors first
+      return new Map(val)
     })
 })
