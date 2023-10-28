@@ -1,6 +1,6 @@
 import { fromUint8Array, toUint8Array } from 'js-base64'
 import { deflate, inflate } from 'pako'
-import { shortenNameColor } from '../components/Palette'
+import { shortenNameColor } from '../components/Palettes'
 import { type SharedState } from '../state/shareableStore'
 
 // Based on https://github.com/mermaid-js/mermaid-live-editor/blob/7c64a6549779435986739d48d5dbf3710725c281/src/lib/util/serde.ts#L1
@@ -26,10 +26,15 @@ function shortenSyllablesColor(syllablesColor: SharedState['syllablesColor']) {
   return shortened
 }
 
-export function serializeState({ syllablesColor, ...state }: SharedState) {
+export function serializeState({
+  syllablesColor,
+  syllablesTempo,
+  ...state
+}: SharedState) {
   return JSON.stringify({
     ...state,
-    syllablesColor: shortenSyllablesColor(syllablesColor)
+    syllablesColor: shortenSyllablesColor(syllablesColor),
+    syllablesTempo: [...syllablesTempo.entries()]
   })
 }
 

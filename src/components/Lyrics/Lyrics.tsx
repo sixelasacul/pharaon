@@ -1,38 +1,64 @@
 import { PencilIcon, PrinterIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import * as React from 'react'
-import { usePickedColor } from '../../state/PickedColorContext'
+import { useUserSelection } from '../../state/UserSelectionContext'
 import {
   useShareableStoreAction,
   useShareableStore
 } from '../../state/shareableStore'
 import { identifyArrayItems } from '../../utils/identifyArrayItems'
-import { extractSyllablesFromSentence } from '../../utils/parser'
-import { noColor } from '../Palette'
+import {
+  WORD_SEPARATOR_REGEX,
+  extractSyllablesFromSentence
+} from '../../utils/parser'
+import { noColor } from '../Palettes'
 import { QuickAction } from '../QuickActions'
 import { ShareButton } from '../ShareButton'
-import { Syllable as InternalSyllable } from '../Syllable'
+import {
+  Syllable as InternalSyllable,
+  type SyllableProps as InternalSyllableProps
+} from '../Syllable'
 import { Button } from '../ui/button'
 import { Toggle } from '../ui/toggle'
 
 const DEFAULT_TEXT =
   'Ajouter un texte en cliquant sur le crayon en haut à droite'
 
-interface SyllableProps {
+interface SyllableProps
+  extends Omit<InternalSyllableProps, 'color' | 'tempo' | 'onClick'> {
   index: number
 }
-function Syllable({ index, children }: React.PropsWithChildren<SyllableProps>) {
+function Syllable({
+  index,
+  children,
+  ...props
+}: React.PropsWithChildren<SyllableProps>) {
   // Prefer null rather than undefined
-  const [pickedColor = null] = usePickedColor()
-  const { updateSyllablesColor } = useShareableStoreAction()
+  const {
+    color: pickedColor = null,
+    tempo: pickedTempo = null,
+    mode
+  } = useUserSelection()
+  const { updateSyllablesColor, updateSyllablesTempo } =
+    useShareableStoreAction()
   const color = useShareableStore((state) => state.syllablesColor.get(index))
+  const tempo = useShareableStore((state) => state.syllablesTempo.get(index))
+
+  function updateSyllable() {
+    if (mode === 'color') {
+      updateSyllablesColor(index, pickedColor)
+    }
+    if (mode === 'tempo') {
+      updateSyllablesTempo(index, pickedTempo)
+    }
+  }
 
   return (
     <InternalSyllable
       color={color ?? noColor}
-      onClick={() => {
-        updateSyllablesColor(index, pickedColor)
-      }}
+      tempo={tempo}
+      onClick={updateSyllable}
+      {...props}
     >
       {children}
     </InternalSyllable>
@@ -66,6 +92,7 @@ export function Lyrics() {
     <>
       <QuickAction>
         <Toggle
+          icon
           variant='outline'
           onPressedChange={(pressed) => {
             pressed ? startEditing() : doneEditing()
@@ -87,7 +114,7 @@ export function Lyrics() {
       <div className='h-full w-full max-w-lg overflow-y-auto border-red-200'>
         {isEditing ? (
           <textarea
-            className='-mb-1 h-full w-full resize-none bg-transparent font-medium tracking-wide semi-expanded placeholder:oblique'
+            className='-mb-1 h-full w-full resize-none bg-transparent font-medium leading-relaxed tracking-wide semi-expanded placeholder:oblique'
             placeholder={DEFAULT_TEXT}
             value={editedLyrics}
             onChange={(e) => {
@@ -104,14 +131,13 @@ export function Lyrics() {
         ) : (
           <p
             className={clsx(
-              'h-max whitespace-pre-line font-medium tracking-wide semi-expanded',
+              'h-max whitespace-pre-line font-medium leading-relaxed tracking-wide semi-expanded',
               { 'opacity-75 oblique': syllables.length === 0 }
             )}
           >
             {syllables.length > 0
               ? syllables.map(({ id, content }, index) => {
-                  // If it has a space, that means it's not a syllable
-                  if (/\s/i.test(content)) {
+                  if (WORD_SEPARATOR_REGEX.test(content)) {
                     return content
                   } else {
                     return (

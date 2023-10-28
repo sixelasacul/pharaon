@@ -1,9 +1,9 @@
 import { DocumentPlusIcon } from '@heroicons/react/24/outline'
-import { PickedColorProvider } from '../../state/PickedColorContext'
+import { UserSelectionProvider } from '../../state/UserSelectionContext'
 import { Lyrics } from '../Lyrics'
 import { Menu } from '../Menu'
 import { SongMetadata } from '../Metadata'
-import { Palette } from '../Palette'
+import { Palettes } from '../Palettes'
 import { QuickActionsContainer } from '../QuickActions'
 import { Title } from '../Title'
 import { Button } from '../ui/button'
@@ -13,7 +13,14 @@ export function App() {
   return (
     <>
       <SyncStore />
-      <PickedColorProvider>
+      <QuickActionsContainer>
+        <Button asChild icon variant='outline'>
+          <a href='#'>
+            <DocumentPlusIcon />
+          </a>
+        </Button>
+      </QuickActionsContainer>
+      <UserSelectionProvider>
         <div className='main-layout'>
           <div className='col-span-2 print:hidden md:col-span-1'>
             <div className='flex flex-row items-center gap-2 md:flex-col-reverse md:items-start md:gap-4'>
@@ -25,19 +32,12 @@ export function App() {
             <SongMetadata />
             <Lyrics />
           </div>
-          <div className='flex flex-col items-end justify-center'>
-            <QuickActionsContainer>
-              <Button asChild icon variant='outline'>
-                <a href='#'>
-                  <DocumentPlusIcon />
-                </a>
-              </Button>
-            </QuickActionsContainer>
-            <Palette />
+          <div className='grid grid-rows-3 place-content-end'>
             <div />
+            <Palettes />
           </div>
         </div>
-      </PickedColorProvider>
+      </UserSelectionProvider>
     </>
   )
 }

@@ -1,6 +1,8 @@
-import { type Color } from '../../state/PickedColorContext'
+import { type Color } from '../../state/UserSelectionContext'
 
 type ColorMap = Record<string, Color>
+
+export const tempos = [1, 2, 3, 4]
 
 export const noColor: Color = {
   name: 'none',

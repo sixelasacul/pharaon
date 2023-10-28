@@ -1,10 +1,25 @@
-import { clsx } from 'clsx'
-import { type Color } from '../../state/PickedColorContext'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { type Color } from '../../state/UserSelectionContext'
+import { cn } from '@/utils/cn'
 
-interface SyllableProps {
+const syllableVariants = cva(
+  'relative select-all py-px transition-colors md:py-1',
+  {
+    variants: {
+      size: {
+        normal: 'duration-75',
+        large: 'duration-150'
+      }
+    }
+  }
+)
+
+type SyllableVariants = VariantProps<typeof syllableVariants>
+
+export interface SyllableProps extends Omit<SyllableVariants, 'tempo'> {
   color: Color
   className?: string
-  size?: 'normal' | 'large'
+  tempo?: number
   onClick(): void
 }
 
@@ -13,25 +28,27 @@ export function Syllable({
   children,
   color,
   size = 'normal',
+  tempo,
   onClick
 }: React.PropsWithChildren<SyllableProps>) {
+  const hasTempo = tempo !== undefined
   // TODO: Fix overlapping padding
   return (
     <span
-      className={clsx(
-        'select-all py-2 transition-colors',
+      className={cn(
         color.base,
         color.hover,
-        {
-          'py-1 duration-75': size === 'normal',
-          'py-2 duration-150': size === 'large'
-        },
-        className
+        syllableVariants({ size, className })
       )}
       role='button'
       onClick={onClick}
     >
       {children}
+      {hasTempo && (
+        <span className='absolute -bottom-2 right-0 z-10 select-none text-xs text-slate-500'>
+          {tempo}
+        </span>
+      )}
     </span>
   )
 }
