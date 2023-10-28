@@ -34,24 +34,21 @@ function Syllable({
   ...props
 }: React.PropsWithChildren<SyllableProps>) {
   // Prefer null rather than undefined
-  const [{ color: pickedColor = null, tempo: pickedTempo = null }] =
-    useUserSelection()
+  const {
+    color: pickedColor = null,
+    tempo: pickedTempo = null,
+    mode
+  } = useUserSelection()
   const { updateSyllablesColor, updateSyllablesTempo } =
     useShareableStoreAction()
   const color = useShareableStore((state) => state.syllablesColor.get(index))
   const tempo = useShareableStore((state) => state.syllablesTempo.get(index))
 
   function updateSyllable() {
-    // Shouldn't have both a color and a tempo picked
-    // Could be simpler
-    if (pickedColor === null && pickedTempo === null) {
-      updateSyllablesColor(index, pickedColor)
-      updateSyllablesTempo(index, pickedTempo)
-    }
-    if (pickedColor !== null) {
+    if (mode === 'color') {
       updateSyllablesColor(index, pickedColor)
     }
-    if (pickedTempo !== null) {
+    if (mode === 'tempo') {
       updateSyllablesTempo(index, pickedTempo)
     }
   }
@@ -95,6 +92,7 @@ export function Lyrics() {
     <>
       <QuickAction>
         <Toggle
+          icon
           variant='outline'
           onPressedChange={(pressed) => {
             pressed ? startEditing() : doneEditing()

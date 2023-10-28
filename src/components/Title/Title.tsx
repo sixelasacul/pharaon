@@ -21,7 +21,7 @@ export function Title<E extends React.ElementType>({
   className,
   ...props
 }: PolymorphedTitleProps<E>) {
-  const [{ color: pickedColor = null }] = useUserSelection()
+  const { color: pickedColor = null } = useUserSelection()
   const [{ pha, ra, on }, setColors] = React.useState<State>(() => {
     const [first, second] = getUniqueRandomIntListInclusive(
       0,

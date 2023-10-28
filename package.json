@@ -27,6 +27,7 @@
     "react-use": "^17.4.0",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7",
+    "ts-pattern": "^5.0.5",
     "use-clipboard-copy": "^0.2.0",
     "uuid": "^9.0.1",
     "zod": "^3.22.2",

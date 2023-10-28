@@ -13,6 +13,13 @@ export function App() {
   return (
     <>
       <SyncStore />
+      <QuickActionsContainer>
+        <Button asChild icon variant='outline'>
+          <a href='#'>
+            <DocumentPlusIcon />
+          </a>
+        </Button>
+      </QuickActionsContainer>
       <UserSelectionProvider>
         <div className='main-layout'>
           <div className='col-span-2 print:hidden md:col-span-1'>
@@ -25,16 +32,9 @@ export function App() {
             <SongMetadata />
             <Lyrics />
           </div>
-          <div className='flex flex-col items-end justify-center'>
-            <QuickActionsContainer>
-              <Button asChild icon variant='outline'>
-                <a href='#'>
-                  <DocumentPlusIcon />
-                </a>
-              </Button>
-            </QuickActionsContainer>
-            <Palettes />
+          <div className='grid grid-rows-3 place-content-end'>
             <div />
+            <Palettes />
           </div>
         </div>
       </UserSelectionProvider>
