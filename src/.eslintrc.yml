@@ -33,8 +33,13 @@ rules:
   "@typescript-eslint/method-signature-style":
     - error
     - method
+  "@typescript-eslint/no-confusing-void-expression":
+    - error
+    - 
+      ignoreArrowShorthand: true
   react/react-in-jsx-scope: off
   react/prop-types: off
+  react/no-unescaped-entities: off
   import/order:
     - error
     -

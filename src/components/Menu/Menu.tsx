@@ -13,13 +13,13 @@ import {
 
 function PreparedHistory() {
   return (
-    <div className='flex h-full flex-col gap-2 py-4 md:gap-4 md:p-8'>
+    // `pb-12`: Small hack to create some space at the bottom of the history.
+    // For some reason, it overlaps on the Sheet padding.
+    <div className='flex h-full flex-col gap-2 overflow-scroll pb-12 pt-4 md:gap-4 md:p-8'>
       <h3 className='text-center text-lg md:text-xl'>
         Historique des découpages
       </h3>
-      <div className='overflow-y-auto'>
-        <History />
-      </div>
+      <History />
     </div>
   )
 }
@@ -39,7 +39,7 @@ export function Menu() {
         </Button>
       </SheetTrigger>
       <SheetContent side='left'>
-        <SheetHeader>
+        <SheetHeader className='mb-2'>
           <Title as={SheetTitle} className='text-left' />
         </SheetHeader>
         <PreparedHistory />
