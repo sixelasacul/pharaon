@@ -1,6 +1,6 @@
 import { v4 as uuid } from 'uuid'
 import { create } from 'zustand'
-import { type Color } from '../UserSelectionContext'
+import { type ColorUpdater, type TempoUpdater } from '../UserSelectionContext'
 import { type SharedState } from './schemas'
 
 // TODO: Rename store if we no longer need `shareable`
@@ -8,8 +8,8 @@ import { type SharedState } from './schemas'
 interface Store extends SharedState {
   resetState(): void
   updateState(next: Partial<SharedState>): void
-  updateSyllablesColor(index: number, color: Color | null): void
-  updateSyllablesTempo(index: number, tempo: number | null): void
+  updateSyllablesColor(index: number, color: ColorUpdater): void
+  updateSyllablesTempo(index: number, tempo: TempoUpdater): void
 }
 
 export const defaultStore: SharedState = {
@@ -47,10 +47,10 @@ const useStore = create<Store>((set) => ({
   },
   updateSyllablesColor(index, color) {
     set((state) => {
-      if (color !== null) {
-        state.syllablesColor.set(index, color)
-      } else {
+      if (color === 'eraser') {
         state.syllablesColor.delete(index)
+      } else {
+        state.syllablesColor.set(index, color)
       }
       return {
         syllablesColor: state.syllablesColor
@@ -60,10 +60,10 @@ const useStore = create<Store>((set) => ({
   // updateSyllables(index, 'color' | 'tempo', value)?
   updateSyllablesTempo(index, tempo) {
     set((state) => {
-      if (tempo !== null) {
-        state.syllablesTempo.set(index, tempo)
-      } else {
+      if (tempo === 'eraser') {
         state.syllablesTempo.delete(index)
+      } else {
+        state.syllablesTempo.set(index, tempo)
       }
       return {
         syllablesTempo: state.syllablesTempo

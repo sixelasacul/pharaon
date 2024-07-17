@@ -33,22 +33,17 @@ function Syllable({
   children,
   ...props
 }: React.PropsWithChildren<SyllableProps>) {
-  // Prefer null rather than undefined
-  const {
-    color: pickedColor = null,
-    tempo: pickedTempo = null,
-    mode
-  } = useUserSelection()
+  const { color: pickedColor, tempo: pickedTempo, mode } = useUserSelection()
   const { updateSyllablesColor, updateSyllablesTempo } =
     useShareableStoreAction()
   const color = useShareableStore((state) => state.syllablesColor.get(index))
   const tempo = useShareableStore((state) => state.syllablesTempo.get(index))
 
   function updateSyllable() {
-    if (mode === 'color') {
+    if (mode === 'color' && pickedColor !== undefined) {
       updateSyllablesColor(index, pickedColor)
     }
-    if (mode === 'tempo') {
+    if (mode === 'tempo' && pickedTempo !== undefined) {
       updateSyllablesTempo(index, pickedTempo)
     }
   }

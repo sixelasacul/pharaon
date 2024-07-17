@@ -8,26 +8,26 @@ export interface Color {
   name: string
 }
 
-// Would be helpful to type that they can't be set at the same time
-// TODO: Introduce a selection mode, to only edit colors or tempos (to prevent
-// affecting the other one)
+export type Tempo = 1 | 2 | 3 | 4
+
+export type ColorUpdater = Color | 'eraser'
+export type TempoUpdater = Tempo | 'eraser'
+
 export interface UserSelection {
-  mode?: 'color' | 'tempo'
-  color?: Color
-  tempo?: number
+  mode: 'color' | 'tempo'
+  // `undefined` means no selected action (though mode is selected)
+  color?: ColorUpdater
+  tempo?: TempoUpdater
 }
 
 // `typeof React.useState` seems to always assume that `value` can be `undefined`
 type UserSelectionContextType = [UserSelection, React.Dispatch<Actions>]
 
-const defaultValue: UserSelectionContextType = [{}, () => ({})]
+const defaultState: UserSelection = { mode: 'color' }
+const defaultValue: UserSelectionContextType = [defaultState, () => ({})]
 const UserSelectionContext =
   React.createContext<UserSelectionContextType>(defaultValue)
 
-interface ChangeModeAction {
-  type: 'change-mode'
-  payload: UserSelection['mode']
-}
 interface ChangeColorAction {
   type: 'change-color'
   payload: UserSelection['color']
@@ -37,29 +37,28 @@ interface ChangeTempoAction {
   payload: UserSelection['tempo']
 }
 
-type Actions = ChangeModeAction | ChangeColorAction | ChangeTempoAction
+type Actions = ChangeColorAction | ChangeTempoAction
 
 function reducer(state: UserSelection, action: Actions) {
   return match(action)
     .returnType<UserSelection>()
-    .with({ type: 'change-mode' }, ({ payload }) => ({
-      mode: payload,
-      color: undefined,
-      tempo: undefined
-    }))
     .with({ type: 'change-color' }, ({ payload }) => ({
       ...state,
+      mode: 'color',
+      tempo: undefined,
       color: payload === state.color ? undefined : payload
     }))
     .with({ type: 'change-tempo' }, ({ payload }) => ({
       ...state,
+      mode: 'tempo',
+      color: undefined,
       tempo: payload === state.tempo ? undefined : payload
     }))
     .exhaustive()
 }
 
 export function UserSelectionProvider({ children }: React.PropsWithChildren) {
-  const userSelectionState = React.useReducer(reducer, {})
+  const userSelectionState = React.useReducer(reducer, defaultState)
   return (
     <UserSelectionContext.Provider value={userSelectionState}>
       {children}
@@ -75,10 +74,6 @@ export function useUserSelection() {
 
   const [state, dispatch] = ctx
 
-  function changeMode(payload: UserSelection['mode']) {
-    dispatch({ type: 'change-mode', payload })
-  }
-
   function changeColor(payload: UserSelection['color']) {
     dispatch({ type: 'change-color', payload })
   }
@@ -89,7 +84,6 @@ export function useUserSelection() {
 
   return {
     ...state,
-    changeMode,
     changeColor,
     changeTempo
   }
