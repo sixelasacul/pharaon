@@ -1,4 +1,5 @@
-import { getHistory } from '../../utils/history'
+import * as React from 'react'
+import { useHistory } from '../../utils/history'
 import {
   Card,
   CardContent,
@@ -17,13 +18,22 @@ function defaultString(str: string) {
 }
 
 export function History() {
-  const history = getHistory()
+  const history = useHistory()
+
+  if (history.length === 0) {
+    return (
+      <p className='text-center'>
+        Éditez votre premier morceau pour qu'il apparaisse ici
+      </p>
+    )
+  }
+
   return (
     <ul className='flex flex-col gap-2 md:gap-4'>
       {history.map((entry) => (
         <li key={entry.id}>
           <a href={`#${entry.id}`}>
-            <Card className='hover:bg-slate-50' elevated={false}>
+            <Card className='hover:bg-accent' elevated={false}>
               <CardHeader>
                 <CardTitle>{defaultString(entry.name)}</CardTitle>
                 <CardDescription>
